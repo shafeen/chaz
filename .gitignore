@@ -1,3 +1,13 @@
+# basicMEAN specific IGNORES
+# --------------------------
+.idea/
+out/
+client/public/build/
+dist/
+*.iml
+
+# NODE IGNORES
+# ------------
 # Logs
 logs
 *.log
