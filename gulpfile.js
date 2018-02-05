@@ -60,23 +60,45 @@ gulp.task('prep-dist', ['build-ng-client'], () => {
         .pipe(gulp.dest(DIST_BASE));
 });
 
-gulp.task('build-ng-client', () => {
+const buildUtil = {
+    buildWithoutMinifyJs: function (jsFilesGlob, concatFileName) {
+        let jsFiles = gulp.src(jsFilesGlob);
+        return jsFiles.pipe(plugins.concat(`${concatFileName}.js`));
+    },
+    buildAndMinifyJs : function (jsFilesGlob, concatFileName) {
+        return buildUtil.buildWithoutMinifyJs(jsFilesGlob, concatFileName)
+            .pipe(plugins.uglifyEs.default());
+    }
+};
+
+gulp.task('build-minify-ng-client', () => {
     let angularfilesGlob = ['./client/ng-client/**/*.js', './client/ng-client-secure/**/*.js'];
-    let angularJsFiles = gulp.src(angularfilesGlob);
-    return angularJsFiles.pipe(plugins.concat('ng-client.js'))
-        .pipe(plugins.uglifyEs.default())
-        .pipe(plugins.rename('ng-client.min.js'))
+    return buildUtil.buildAndMinifyJs(angularfilesGlob, 'ng-client')
         .pipe(gulp.dest(BUILD_PATH));
 });
 
-gulp.task('watch-angular', ['build-ng-client'], () => {
+// use this to test the production minified js
+gulp.task('watch-minify-angular', ['build-minify-ng-client'], () => {
     let angularfilesGlob = ['./client/ng-client/**/*.js', './client/ng-client-secure/**/*.js'];
     return plugins.watch(angularfilesGlob, () => {
         console.log('rebuilding: %s', new Date());
-        let angularJsFiles = gulp.src(angularfilesGlob);
-        return angularJsFiles.pipe(plugins.concat('ng-client.js'))
-            .pipe(plugins.uglifyEs.default())
-            .pipe(plugins.rename('ng-client.min.js'))
+        return buildUtil.buildAndMinifyJs(angularfilesGlob, 'ng-client')
+            .pipe(gulp.dest(BUILD_PATH));
+    });
+});
+
+gulp.task('build-nominify-ng-client', () => {
+    let angularfilesGlob = ['./client/ng-client/**/*.js', './client/ng-client-secure/**/*.js'];
+    return buildUtil.buildWithoutMinifyJs(angularfilesGlob, 'ng-client')
+        .pipe(gulp.dest(BUILD_PATH));
+});
+
+// use this in development so you can debug the js easily in a browser
+gulp.task('watch-angular', ['build-nominify-ng-client'], () => {
+    let angularfilesGlob = ['./client/ng-client/**/*.js', './client/ng-client-secure/**/*.js'];
+    return plugins.watch(angularfilesGlob, () => {
+        console.log('rebuilding: %s', new Date());
+        return buildUtil.buildWithoutMinifyJs(angularfilesGlob, 'ng-client')
             .pipe(gulp.dest(BUILD_PATH));
     });
 });
