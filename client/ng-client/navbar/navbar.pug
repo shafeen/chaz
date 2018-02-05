@@ -14,13 +14,13 @@ div
       #bs-example-navbar-collapse-1.collapse.navbar-collapse
         ul.nav.navbar-nav
           li(ng-repeat="view in navbar.data.left.public"
-              class="{{(navbar.$location.path()==view.path.primary || navbar.$location.path() == view.path.alt)? 'active' : ''}}")
-            a(ng-href='#{{view.path.primary}}') {{view.displayName}}
+              class="{{(navbar.$state.is(view.uiRouterState))? 'active' : ''}}")
+            a(ui-sref='{{view.uiRouterState}}') {{view.displayName}}
 
           if user
             li(ng-repeat="view in navbar.data.left.protected"
-                class="{{(navbar.$location.path()==view.path.primary || navbar.$location.path() == view.path.alt)? 'active' : ''}}")
-              a(ng-href='#{{view.path.primary}}') {{view.displayName}}
+                class="{{(navbar.$state.is(view.uiRouterState))? 'active' : ''}}")
+              a(ui-sref='{{view.uiRouterState}}') {{view.displayName}}
 
           li(ng-show='navbar.loading')
             a(href='')
@@ -28,8 +28,8 @@ div
 
         ul.nav.navbar-nav.navbar-right
           li(ng-repeat="view in navbar.data.right.public"
-              class="{{(navbar.$location.path()==view.path.primary || navbar.$location.path() == view.path.alt)? 'active' : ''}}")
-            a(ng-href='#{{view.path.primary}}') {{view.displayName}}
+              class="{{(navbar.$state.is(view.uiRouterState))? 'active' : ''}}")
+            a(ui-sref='{{view.uiRouterState}}') {{view.displayName}}
           if !user
             li.dropdown
               a.dropdown-toggle(href='/login', data-toggle='dropdown')
@@ -44,8 +44,8 @@ div
                   |  Sign Up
           else
             li(ng-repeat="view in navbar.data.right.protected"
-                class="{{(navbar.$location.path()==view.path.primary || navbar.$location.path() == view.path.alt)? 'active' : ''}}")
-              a(ng-href='#{{view.path.primary}}') {{view.displayName}}
+                class="{{(navbar.$state.is(view.uiRouterState))? 'active' : ''}}")
+              a(ui-sref='{{view.uiRouterState}}') {{view.displayName}}
             li
               .navbar-form
                 a.btn.btn-warning.btn-outline(href='authenticate/logout')

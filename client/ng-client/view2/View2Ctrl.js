@@ -9,6 +9,4 @@ angular.module('basicMEAN')
             self.message = Settings.data.view2Msg;
         })
     };
-
-    self.$onInit();
 }]);

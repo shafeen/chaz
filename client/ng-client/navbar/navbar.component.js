@@ -5,25 +5,28 @@ angular.module('basicMEAN')
     bindings: {
     }
 })
-.controller('NavbarCtrl', ['$scope', '$http', '$location', '$window', '$timeout', function ($scope, $http, $location, $window, $timeout) {
+.controller('NavbarCtrl', ['$scope', '$http', '$location', '$window', '$timeout', '$state', function ($scope, $http, $location, $window, $timeout, $state) {
     const navbar = this;
+
+    navbar.$state = $state;
+    navbar.$location = $location;
 
     navbar.data = {
         left : {
             public: [
                 {
-                    path: { primary: '/view1', alt: '/'},
+                    uiRouterState: 'view1',
                     displayName: 'View 1'
                 },
                 {
-                    path: { primary: '/view2'},
+                    uiRouterState: 'view2',
                     displayName: 'View 2'
                 }
 
             ],
             protected: [
                 {
-                    path: { primary: '/view-protected'},
+                    uiRouterState: 'view-protected',
                     displayName: 'View-Protected',
                 }
             ]
@@ -33,14 +36,12 @@ angular.module('basicMEAN')
             public : [],
             protected: [
                 {
-                    path: { primary: '/profile'},
+                    uiRouterState: 'profile',
                     displayName: 'Profile',
                 }
             ]
         }
     };
-
-    navbar.$location = $location;
 
     $scope.$on('$locationChangeStart', function (e) {
         navbar.loading = true;
