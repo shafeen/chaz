@@ -48,6 +48,11 @@ module.exports = function (passport) {
     // TODO: (shafeen) set up api routes controllers in the library
     router.use('/api', require('./api')(settings));
 
+    router.use(/.*/, (req, res) => {
+        // Redirect to the home page if no routes match
+        res.redirect('/');
+    });
+
     // route middleware to make sure a user is logged in
     function isLoggedIn(req, res, next) {
         // if user is authenticated in the session, carry on
