@@ -1,5 +1,6 @@
-const URL = 'mongodb://192.168.0.21:27017/test';
-const BACKUP_URL = 'mongodb://localhost:27017/test';
+const DB_NAME = 'basicmeantest';
+const URL = `mongodb://192.168.0.21:27017/${DB_NAME}`;
+const BACKUP_URL = `mongodb://localhost:27017/${DB_NAME}`;
 
 module.exports = function (mongoose) {
     mongoose.connect(URL, function(err) {
