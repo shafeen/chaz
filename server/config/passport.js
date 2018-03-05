@@ -12,8 +12,10 @@ module.exports = function (passport) {
         done(null, user.id);
     });
     passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user) {
-            done(err, user);
+        User.findById(id).exec().then(function(user) {
+            done(null, user);
+        }).then(null, function (err) {
+            done(err);
         });
     });
 
@@ -30,11 +32,7 @@ module.exports = function (passport) {
         function(req, email, password, done) {
             // asynchronous
             process.nextTick(function () {
-                User.findOne({'local.email': email}, function (err, user) {
-                    if (err) {
-                        return done(err);
-                    }
-
+                User.findOne({'local.email': email}).exec().then(function (user) {
                     if (user) {
                         let failMsg = 'Email already taken!';
                         console.log(`passport: ${failMsg}`);
@@ -50,6 +48,8 @@ module.exports = function (passport) {
                             return done(null, newUser);
                         });
                     }
+                }).then(null, function (err) {
+                    return done(err);
                 });
             });
         }
@@ -63,11 +63,7 @@ module.exports = function (passport) {
             passReqToCallback: true
         },
         function(req, email, password, done) {
-            User.findOne({'local.email': email}, function (err, user) {
-                if (err) {
-                    return done(err);
-                }
-
+            User.findOne({'local.email': email}).exec().then(function (user) {
                 if (!user) {
                     let failMsg = 'No user found.';
                     console.log(`passport: ${failMsg}`);
@@ -79,6 +75,8 @@ module.exports = function (passport) {
                 } else {
                     return done(null, user);
                 }
+            }).then(null, function (err) {
+                return done(err);
             });
         }
     ));
