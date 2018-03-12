@@ -1,8 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy;
+const UserRepository = require('../library/Repositories/UserRepository');
 
-const User = require('../models/user.model');
-
-// TODO: (shafeen) set it up so that we use an User repository instead of mongoose directly
+// TODO: (shafeen) set it up so that we use an UserRepository instead of mongoose directly
 
 module.exports = function (passport) {
 
@@ -12,7 +11,7 @@ module.exports = function (passport) {
         done(null, user.id);
     });
     passport.deserializeUser(function(id, done) {
-        User.findById(id).exec().then(function(user) {
+        UserRepository.findSingleUser({id: id}).then(function(user) {
             done(null, user);
         }).then(null, function (err) {
             done(err);
@@ -32,20 +31,20 @@ module.exports = function (passport) {
         function(req, email, password, done) {
             // asynchronous
             process.nextTick(function () {
-                User.findOne({'local.email': email}).exec().then(function (user) {
+                // TODO: we should be able to request a UserRepository to get this information for us
+                UserRepository.findSingleUser({email: email}).then(function (user) {
                     if (user) {
                         let failMsg = 'Email already taken!';
                         console.log(`passport: ${failMsg}`);
                         return done(null, false, req.flash('signupMsg', failMsg));
                     } else {
-                        let newUser = new User();
-                        newUser.local.email = email;
-                        newUser.local.password = newUser.generateHash(password);
-                        newUser.save(function (err) {
-                            if (err) {
-                                throw err;
-                            }
-                            return done(null, newUser);
+                        UserRepository.createNewUser({
+                            email: email,
+                            password: password
+                        }).then(function (newUser) {
+                            done(null, newUser);
+                        }).then(null, function (err) {
+                            throw err;
                         });
                     }
                 }).then(null, function (err) {
@@ -63,7 +62,7 @@ module.exports = function (passport) {
             passReqToCallback: true
         },
         function(req, email, password, done) {
-            User.findOne({'local.email': email}).exec().then(function (user) {
+            UserRepository.findSingleUser({email: email}).then(function (user) {
                 if (!user) {
                     let failMsg = 'No user found.';
                     console.log(`passport: ${failMsg}`);
