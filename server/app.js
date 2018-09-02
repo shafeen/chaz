@@ -5,7 +5,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
-const session = require('express-session');
+const sessionMiddleware = require('./config/sessionMiddleware');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('express-flash');
@@ -44,13 +44,7 @@ app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 app.use('/settings', express.static(path.join(__dirname, 'config', 'settings')));
 
 // setup app to use passportjs
-// NOTE: change secure to false for an https site
-app.use(session({
-    secret: 'sessionSecret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }
-}));
+app.use(sessionMiddleware(process.env.SESSION_STORE));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
