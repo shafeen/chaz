@@ -1,5 +1,6 @@
 const DB_NAME = 'basicmeantest';
-const URL = `mongodb://192.168.0.21:27017/${DB_NAME}`;
+const MONGODB_NETWORK_URL = process.env.MONGODB_NETWORK_URL || 'localhost';
+const URL = `mongodb://${MONGODB_NETWORK_URL}:27017/${DB_NAME}`;
 const BACKUP_URL = `mongodb://localhost:27017/${DB_NAME}`;
 
 module.exports = function (mongoose) {
