@@ -12,11 +12,11 @@ module.exports = function (mongoose) {
                     console.log("backup connection failed!");
                     console.error(err);
                 } else {
-                    console.log("connected to mongodb");
+                    console.log(`connected to mongodb on ${BACKUP_URL}`);
                 }
             });
         } else {
-            console.log("connected to mongodb");
+            console.log(`connected to mongodb on ${URL}`);
         }
     });
 };
