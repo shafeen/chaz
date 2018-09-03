@@ -7,9 +7,14 @@ const URL_LOGIN_SUCCESS  = '/#/profile';
 const URL_LOGIN_FAILURE  = '/login';
 const URL_LOGOUT_SUCCESS = '/';
 
-router.get('/logout', function (req, res) {
+router.get('/logout', function (req, res, next) {
     req.logout();
-    res.redirect(URL_LOGOUT_SUCCESS);
+    req.session.destroy(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect(URL_LOGOUT_SUCCESS);
+    });
 });
 
 module.exports = function(passport) {

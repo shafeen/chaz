@@ -8,8 +8,10 @@ module.exports = function (passport) {
 
     router.get('/', function (req, res, next) {
         if (req.isAuthenticated()) {
+            req.session.sessionData = req.session.sessionData || {};
             res.render('index', {
                 user: req.user,
+                sessionData: req.session.sessionData,
                 logoutUrl: AUTHENTICATE_BASE_URL + '/logout'
             });
         } else {

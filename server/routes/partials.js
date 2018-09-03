@@ -12,7 +12,9 @@ router.get('/:modulename/:partialname', function(req, res) {
 
 // loading secure module partial views -- anything more specific should come before
 router.get('/secure/:modulename/:partialname', isLoggedIn, function(req, res) {
-    res.render(NG_CLIENT_SECURE_RELATIVE_PATH + req.params.modulename + '/' + req.params.partialname, {user: req.user, settings: settings});
+    res.render(NG_CLIENT_SECURE_RELATIVE_PATH + req.params.modulename + '/' + req.params.partialname,
+        {user: req.user, sessionData: req.session.sessionData, settings: settings}
+    );
 });
 
 // route middleware to make sure a user is logged in
