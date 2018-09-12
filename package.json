@@ -6,8 +6,9 @@
     "serve": "",
     "debug": "node ./bin/www",
     "prepare-dist": "gulp prep-dist",
+    "start": "gulp build-nominify-ng-client && nodemon -e pug,html,js ./server/bin/www",
     "start-nogulp": "nodemon -e pug,html,js ./server/bin/www",
-    "start": "gulp watch-angular | nodemon -e pug,html,js ./server/bin/www"
+    "start-withgulp": "gulp watch-angular | nodemon -e pug,html,js ./server/bin/www"
   },
   "dependencies": {
     "@uirouter/angularjs": "^1.0.14",

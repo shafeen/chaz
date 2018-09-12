@@ -11,6 +11,10 @@ module.exports = function (settings) {
         })
     });
 
+    router.get('/ping', (req, res) => {
+        res.status(200).send('pong!');
+    });
+
     router.use('/user', require('./protected/user')(settings));
 
     return router;

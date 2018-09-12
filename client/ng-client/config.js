@@ -1,4 +1,4 @@
-angular.module('basicMEAN', ["ui.router"])
+angular.module('basicMEAN', ["ui.router", "ngCookies"])
 .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     const appStates = [];
 
@@ -36,8 +36,7 @@ angular.module('basicMEAN', ["ui.router"])
     appStates.forEach(state => {
         $stateProvider.state(state);
     });
-    $urlRouterProvider.otherwise('/view1');
-
+    $urlRouterProvider.otherwise(appStates[0].url);
 }]);
 
 /*
@@ -45,7 +44,7 @@ To add a new view, follow these steps:
   - create a folder for the view in ng-client OR ng-client-protected
   - create a template .pug file for the view
   - create a controller for the view
-  - preload the controller's js file in layout.pug
+  - preload the controller's js file in layout.pug (no longer needed, gulp will handle this)
   - add a route for the view in the config above 
   - have a link to your view available somewhere
 */
