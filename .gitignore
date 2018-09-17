@@ -5,6 +5,7 @@ out/
 client/public/build/
 dist/
 *.iml
+graphql.config.json
 
 # NODE IGNORES
 # ------------

@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Harry Potter and the Philosopher's Stone",
+    "author": {
+      "name": "J.K. Rowling"
+    }
+  },
+  {
+    "title": "Harry Potter and the Chamber of Secrets",
+    "author": {
+      "name": "J.K. Rowling"
+    }
+  },
+  {
+    "title": "Jurassic Park",
+    "author": {
+      "name": "Michael Crichton"
+    }
+  },
+  {
+    "title": "No Excuses!",
+    "author": {
+      "name": "Brian Tracy"
+    }
+  },
+  {
+    "title": "The 4-Hour Workweek",
+    "author": {
+      "name": "Tim Ferriss"
+    }
+  },
+  {
+    "title": "I, Robot",
+    "author": {
+      "name": "Issac Asimov"
+    }
+  },
+  {
+    "title": "The Lost World",
+    "author": {
+      "name": "Michael Crichton"
+    }
+  }
+]

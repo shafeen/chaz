@@ -49,6 +49,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+// graphql server setup (must be AFTER passport init)
+const graphqlServer = require('./config/graphqlServer');
+graphqlServer.applyMiddleware({app});
+
 // entry point for application routes
 const index = require('./routes/index')(passport);
 app.use('/', index);
