@@ -1,21 +1,20 @@
 const books = require('./sampleData/books.json');
 const authors = require('./sampleData/authors.json');
+const verifyResolverAuthentication = require('./utilities/verifyResolverAuthentication');
 
-const Query = {
+const QueryPublic = {
     book: (root, args, context, info) => {
         return books.filter(book => book.title === args.title)[0]
     },
     books: (root, args, context, info) => {
         return books;
-    },
-    authors: (root, args, context, info) => {
-        if (!context.user) {
-            // TODO: how we return a 401 unauthorized via the graphql endpoint?
-            return null;
-        } else {
-            return authors
-        }
     }
 };
+const QueryProtected = verifyResolverAuthentication({
+    authors: (root, args, context, info) => {
+        return authors;
+    }
+});``
 
+const Query = Object.assign(QueryPublic, QueryProtected);
 module.exports = Query;

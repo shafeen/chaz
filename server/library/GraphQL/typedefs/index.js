@@ -18,6 +18,10 @@ module.exports = function (gql) {
         type Query {
             book(title: String): Book
             books: [Book],
+            
+            """ 
+            **Authentication Required** 
+            """
             authors: [Author]
         }
     `;
