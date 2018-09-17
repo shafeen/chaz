@@ -14,7 +14,7 @@ const QueryProtected = verifyResolverAuthentication({
     authors: (root, args, context, info) => {
         return authors;
     }
-});``
+});
 
 const Query = Object.assign(QueryPublic, QueryProtected);
 module.exports = Query;
