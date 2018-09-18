@@ -12,7 +12,8 @@ angular.module('basicMEAN')
      */
     service.query = function (graphqlQuery) {
         return service.apolloClient.query({
-            query: graphqlQuery
+            query: graphqlQuery,
+            fetchPolicy: 'no-cache'
         })
     };
 
