@@ -10,6 +10,9 @@ html(ng-app='basicMEAN')
     script(src="/libraries/angular/1.5.8/angular-ui-router.min.js")
     script(src="/libraries/angular/1.5.8/angular-resource.min.js")
     script(src="/libraries/angular/1.5.8/angular-cookies.min.js")
+    script(src="/libraries/noty/lib/noty.min.js")
+    link(rel="stylesheet", type="text/css", href="/libraries/noty/lib/noty.css")
+    link(rel="stylesheet", type="text/css", href="/libraries/noty/lib/themes/mint.css")
 
     link(rel="stylesheet" href="/libraries/font-awesome-4.7.0/css/font-awesome.min.css")
     link(rel="stylesheet", type="text/css", href="/stylesheets/style.css")
@@ -20,14 +23,6 @@ html(ng-app='basicMEAN')
     block content
 
     //- inject:js
+    script(src="/build/require-bundle.js")
     script(src="/build/ng-client.js")
     //- endinject
-
-    //script(src="/config.js")
-    //script(src="services/Settings.service.js")
-    //script(src="services/Search.service.js")
-    //script(src="navbar/NavbarCtrl.js")
-    //script(src="view1/View1Ctrl.js")
-    //script(src="view2/View2Ctrl.js")
-    //script(src="view-search/ViewSearchCtrl.js")
-    //script(src="view-protected/ViewProtectedCtrl.js")

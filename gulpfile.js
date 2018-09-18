@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const argv = require('yargs').argv;
+const browserify = require('browserify');
 const plugins = require('gulp-load-plugins')({lazy: true});
 
 const BUILD_PATH = './client/public/build/';
@@ -68,10 +69,31 @@ const buildUtil = {
     buildAndMinifyJs : function (jsFilesGlob, concatFileName) {
         return buildUtil.buildWithoutMinifyJs(jsFilesGlob, concatFileName)
             .pipe(plugins.uglifyEs.default());
+    },
+    buildRequireBundle: function (requireFilesGlob, concatFileName) {
+        return gulp.src(requireFilesGlob)
+            .pipe(plugins.tap(function (file) {
+                // replace file contents with browserify's bundle stream
+                file.contents = browserify(file.path, {debug: true}).bundle();
+            }))
+            // transform streaming contents into buffer contents for gulp-sourcemaps & gulp-concat
+            .pipe(plugins.buffer())
+            .pipe(plugins.concat(`${concatFileName}.js`))
+            // load and init sourcemaps
+            .pipe(plugins.sourcemaps.init({loadMaps: true}))
+            .pipe(plugins.uglifyEs.default({mangle: false}))
+            // write sourcemaps to path relative to destination
+            .pipe(plugins.sourcemaps.write('./'))
     }
 };
 
-gulp.task('build-minify-ng-client', () => {
+gulp.task('build-require-bundle', () => {
+    let requirefilesGlob = ['./client/public/js/requires/*.js'];
+    return buildUtil.buildRequireBundle(requirefilesGlob, 'require-bundle')
+        .pipe(gulp.dest(BUILD_PATH));
+});
+
+gulp.task('build-minify-ng-client', ['build-require-bundle'], () => {
     let angularfilesGlob = ['./client/ng-client/**/*.js', './client/ng-client-secure/**/*.js'];
     return buildUtil.buildAndMinifyJs(angularfilesGlob, 'ng-client')
         .pipe(gulp.dest(BUILD_PATH));
@@ -87,7 +109,7 @@ gulp.task('watch-minify-angular', ['build-minify-ng-client'], () => {
     });
 });
 
-gulp.task('build-nominify-ng-client', () => {
+gulp.task('build-nominify-ng-client', ['build-require-bundle'], () => {
     let angularfilesGlob = ['./client/ng-client/**/*.js', './client/ng-client-secure/**/*.js'];
     return buildUtil.buildWithoutMinifyJs(angularfilesGlob, 'ng-client')
         .pipe(gulp.dest(BUILD_PATH));
