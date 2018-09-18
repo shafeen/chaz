@@ -8,7 +8,7 @@ const verifyResolverAuthentication = (queryResolverMap) => {
             if (!context.user) {
                 throw new AuthenticationError('Login required!');
             } else {
-                return queryResolverMap[queryField];
+                return queryResolverMap[queryField](root, args, context, info);
             }
         }
     });
