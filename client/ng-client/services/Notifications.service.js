@@ -34,25 +34,26 @@ angular.module('basicMEAN')
         notification.show();
     };
 
-    self.notifyInfo = function (text) {
-        self.notify(text, self.types.INFO);
+    self.notifyInfo = function (text, isModal) {
+        let layout = isModal ? self.layouts.CENTER : self.layouts.TOP_RIGHT;
+        self.notify(text, self.types.INFO, layout, isModal);
     };
-
-    self.notifyAlert = function (text) {
-        self.notify(text, self.types.ALERT);
+    self.notifyAlert = function (text, isModal) {
+        let layout = isModal ? self.layouts.CENTER : self.layouts.TOP_RIGHT;
+        self.notify(text, self.types.ALERT, layout, isModal);
     };
-
-    self.notifySuccess = function (text) {
-        self.notify(text, self.types.SUCCESS);
+    self.notifySuccess = function (text, isModal) {
+        let layout = isModal ? self.layouts.CENTER : self.layouts.TOP_RIGHT;
+        self.notify(text, self.types.SUCCESS, layout, isModal);
     };
-
-    self.notifyWarning = function (text) {
+    self.notifyWarning = function (text, isModal) {
+        let layout = isModal ? self.layouts.CENTER : self.layouts.TOP_RIGHT;
         text = "<strong style='color:black'>Warning!</strong><br>"+text;
-        self.notify(text, self.types.WARNING);
+        self.notify(text, self.types.WARNING, layout, isModal);
     };
-
-    self.notifyError = function (text) {
-        self.notify(text, self.types.ERROR);
+    self.notifyError = function (text, isModal) {
+        let layout = isModal ? self.layouts.CENTER : self.layouts.TOP_RIGHT;
+        self.notify(text, self.types.ERROR, layout, isModal);
     };
 
     /**
