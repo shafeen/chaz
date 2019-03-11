@@ -18,7 +18,7 @@ div
             a.nav-link(ui-sref='{{view.uiRouterState}}') {{view.displayName}}
 
         li.nav-item(ng-show='navbar.loading')
-          a.nav-link(href='')
+          a.nav-link.disabled(href='')
             i.fa.fa-refresh.fa-lg.text-info(class="{{navbar.loading? 'fa-spin' : ''}}")
 
       ul.navbar-nav.navbar-right
