@@ -33,7 +33,7 @@ div
             .dropdown-menu.dropdown-menu-right(style='width: 300px; ', role='menu')
               .col-lg-12(ng-include="'partials/navbar/login-form'")
           li.nav-item
-            a.nav-link &nbsp;
+            a.nav-link
           li.nav-item
             .navbar-form(role='alertdialog')
               a.btn.btn-success.btn-outline(href='', data-toggle='modal', data-target='#signup-modal')
@@ -44,8 +44,10 @@ div
               class="{{(navbar.$state.is(view.uiRouterState))? 'active' : ''}}")
             a.nav-link(ui-sref='{{view.uiRouterState}}') {{view.displayName}}
           li.nav-item
+            a.nav-link
+          li.nav-item
             .navbar-form
-              a.btn.btn-warning.btn-outline(href='authenticate/logout')
+              a.btn.btn-outline-warning(href='authenticate/logout')
                 |  Log Out
 
   div(ng-include="'partials/navbar/signup-modal'")
