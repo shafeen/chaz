@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "",
     "debug": "node ./bin/www",
+    "test": "mocha --recursive test/server",
     "prepare-dist": "gulp prep-dist",
     "start": "gulp build-nominify-ng-client && PERSISTENCE_TYPE=mongodb DEBUG=warn,error nodemon -e pug,html,js ./server/bin/www",
     "start-nogulp": "PERSISTENCE_TYPE=mongodb DEBUG=warn,error nodemon -e pug,html,js ./server/bin/www",
