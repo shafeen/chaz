@@ -14,6 +14,9 @@ const flash = require('express-flash');
 const databaseConfig = require('./config/database.js');
 databaseConfig(mongoose);
 
+// configure DI container
+const bottle = require('./config/diContainer.js').initialize();
+
 // configure passportjs for login and signup
 const passportConfig = require('./config/passport.js');
 passportConfig(passport);
@@ -53,8 +56,8 @@ const graphqlServer = require('./config/graphqlServer');
 graphqlServer.applyMiddleware({app});
 
 // entry point for application routes
-const index = require('./routes/index')(passport);
-app.use('/', index);
+const { IndexRouteController } = bottle.container;
+app.use('/', IndexRouteController);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

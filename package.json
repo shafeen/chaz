@@ -6,8 +6,8 @@
     "serve": "",
     "debug": "node ./bin/www",
     "prepare-dist": "gulp prep-dist",
-    "start": "gulp build-nominify-ng-client && nodemon -e pug,html,js ./server/bin/www",
-    "start-nogulp": "nodemon -e pug,html,js ./server/bin/www",
+    "start": "gulp build-nominify-ng-client && PERSISTENCE_TYPE=mongodb DEBUG=warn,error nodemon -e pug,html,js ./server/bin/www",
+    "start-nogulp": "PERSISTENCE_TYPE=mongodb DEBUG=warn,error nodemon -e pug,html,js ./server/bin/www",
     "start-withgulp": "gulp watch-angular | nodemon -e pug,html,js ./server/bin/www"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "apollo-server-express": "^2.0.7",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
+    "bottlejs": "^1.7.2",
     "connect-redis": "^3.3.3",
     "cookie-parser": "~1.4.3",
     "debug": ">=2.6.9",

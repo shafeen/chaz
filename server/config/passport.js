@@ -1,7 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const UserRepository = require('../library/Repositories/UserRepository');
-
-// TODO: (shafeen) set it up so that we use an UserRepository instead of mongoose directly
+const { UserRepository } = require('bottlejs')('basicmean').container;
 
 module.exports = function (passport) {
 
