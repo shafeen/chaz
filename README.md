@@ -1,5 +1,6 @@
 basicMEAN 
 ---
+[![Build Status](https://travis-ci.org/shafeen/basicMEAN.svg?branch=master)](https://travis-ci.org/shafeen/basicMEAN)
 
 ##### An opinionated web starter project to use for websites and web applications
 
