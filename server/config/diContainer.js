@@ -1,6 +1,7 @@
 const bottle = new require('bottlejs')('basicmean');
 const settings = require('./settings/settings.json');
 const path = require('path');
+const debug = require('debug');
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
@@ -12,6 +13,7 @@ module.exports.initialize = function () {
     bottle.service('settings', function() { return settings; });
     bottle.service('require', function() { return require; });
     bottle.service('path', function() { return path; });
+    bottle.service('debug', function() { return debug; });
     bottle.service('express', function() { return express; });
     bottle.service('mongoose', function() { return mongoose; });
     bottle.service('bcrypt', function() { return bcrypt; });
@@ -22,6 +24,7 @@ module.exports.initialize = function () {
     const utilitiesToRequire = [
         `${SERVER_FOLDER}/library/Utilities/authVerifyMiddleware.js`,
         `${SERVER_FOLDER}/library/Utilities/cacheSetMiddleware.js`,
+        `${SERVER_FOLDER}/library/Utilities/logger.js`,
         `${SERVER_FOLDER}/library/Utilities/requireUncached.js`
     ];
     utilitiesToRequire.forEach(

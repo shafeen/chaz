@@ -10,12 +10,12 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('express-flash');
 
+// configure DI container
+const bottle = require('./config/diContainer.js').initialize();
+
 // connect to the database -- NOTE: uncomment when you're ready to add in persistence
 const databaseConfig = require('./config/database.js');
 databaseConfig(mongoose);
-
-// configure DI container
-const bottle = require('./config/diContainer.js').initialize();
 
 // configure passportjs for login and signup
 const passportConfig = require('./config/passport.js');

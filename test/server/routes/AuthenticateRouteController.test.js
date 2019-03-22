@@ -24,10 +24,11 @@ describe('AuthenticateRouteController', function () {
     sinon.spy(routerMock, 'get');
     sinon.spy(routerMock, 'post');
     expressMock.Router.returns(routerMock);
+    const loggerMock = {info: sinon.stub()};
 
     before(function () {
         const AuthenticateRouteController = require('../../../server/routes/AuthenticateRouteController.js')(
-            passportMock, expressMock
+            passportMock, expressMock, loggerMock
         );
         // TODO: improve code testing coverage here
     });

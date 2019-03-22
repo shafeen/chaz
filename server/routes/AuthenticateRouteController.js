@@ -1,6 +1,6 @@
 const bottle = require('bottlejs')('basicmean');
-bottle.service('AuthenticateRouteController', __, 'passport', 'express');
-function __(passport, express) {
+bottle.service('AuthenticateRouteController', __, 'passport', 'express', 'logger');
+function __(passport, express, logger) {
     const router = express.Router();
 
     const URL_SIGNUP_SUCCESS = '/#/profile';
@@ -16,7 +16,7 @@ function __(passport, express) {
 
     // Non-ajax signup routes
     // router.post('/signup', function(req, res, next){
-    //     console.log('Starting Signup..');
+    //     logger.info('Starting Signup..');
     //     return next();
     // }, passport.authenticate('local-signup', {
     //     successRedirect: URL_SIGNUP_SUCCESS,
@@ -25,7 +25,7 @@ function __(passport, express) {
     // }));
 
     router.post('/signup', function(req, res, next){
-        console.log('Starting Signup..');
+        logger.info('Starting Signup..');
         passport.authenticate('local-signup', function (err, user, info) {
             if (err) { return next(err); }
             if (!user) {
@@ -44,7 +44,7 @@ function __(passport, express) {
 
     // Non-ajax login routes
     // router.post('/login', function(req, res, next){
-    //     console.log('Starting Log in process..');
+    //     logger.info('Starting Log in process..');
     //     return next();
     // }, passport.authenticate('local-login', {
     //     successRedirect: URL_LOGIN_SUCCESS,
@@ -52,7 +52,7 @@ function __(passport, express) {
     //     failureFlash: true
     // }));
     router.post('/login', function(req, res, next){
-        console.log('Starting Login..');
+        logger.info('Starting Login..');
         passport.authenticate('local-login', function (err, user, info) {
             if (err) { return next(err); }
             if (!user) {

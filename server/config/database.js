@@ -8,7 +8,8 @@ const MONGODB_NETWORK_URL = process.env.MONGODB_NETWORK_URL || 'localhost';
 const URL = `mongodb://${MONGODB_NETWORK_URL}:27017/${DB_NAME}`;
 const BACKUP_URL = `mongodb://localhost:27017/${DB_NAME}`;
 
-const logger = require('../library/Utilities/logger.js');
+const bottle = require('bottlejs')('basicmean');
+const { logger } = bottle.container;
 
 module.exports = function (mongoose) {
     if (!supportedPersistenceTypes.has(PERSISTENCE_TYPE) || PERSISTENCE_TYPE !== PERSISTENCE_MONGODB) {
