@@ -23,12 +23,22 @@ describe('ProtectedRouteController', function () {
 
     it('should set a simple GET /test route handler', function () {
         const routeName = '/test';
-        assert.isTrue(routerMock.get.calledOnce);
         assert.isTrue(routerMock.get.calledWith(routeName));
         const routeMiddleware = routeToMiddlewareMap.get(routeName);
         const reqMock = {}, resMock = {json: sinon.stub()};
         routeMiddleware(reqMock, resMock);
         assert.isTrue(resMock.json.calledOnce);
+    });
+
+    it('should set a simple GET /ping route handler', function () {
+        const routeName = '/ping';
+        assert.isTrue(routerMock.get.calledWith(routeName));
+        const routeMiddleware = routeToMiddlewareMap.get(routeName);
+        const reqMock = {}, resMock = {status: sinon.stub(), send: sinon.stub()};
+        resMock.status.returns(resMock);
+        routeMiddleware(reqMock, resMock);
+        assert.isTrue(resMock.status.calledOnce);
+        assert.isTrue(resMock.send.calledOnce);
     });
 
     it('should set UserRouteController to handle /user subroutes', function () {

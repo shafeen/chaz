@@ -11,6 +11,10 @@ function __(settings, express, UserRouteController) {
         })
     });
 
+    router.get('/ping', (req, res) => {
+        res.status(200).send('pong!');
+    });
+
     router.use('/user', UserRouteController);
 
     return router;
