@@ -1,5 +1,7 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('UserModel', __, 'mongoose', 'bcrypt');
+module.exports = {
+    name: 'UserModel', service: __, dependencies: ['mongoose', 'bcrypt']
+};
+
 function __(mongoose, bcrypt) {
     const userSchema = mongoose.Schema({
         local : {
@@ -18,4 +20,3 @@ function __(mongoose, bcrypt) {
 
     return mongoose.model('User', userSchema);
 }
-module.exports = __;

@@ -1,5 +1,7 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('UserRepository', __, 'UserModel');
+module.exports = {
+    name: 'UserRepository', service: __, dependencies: ['UserModel']
+};
+
 function __(User) {
     class UserRepository {
 
@@ -36,4 +38,3 @@ function __(User) {
     }
     return UserRepository;
 }
-module.exports = __;

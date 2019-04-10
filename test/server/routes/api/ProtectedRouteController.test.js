@@ -16,7 +16,7 @@ describe('ProtectedRouteController', function () {
     expressMock.Router.returns(routerMock);
 
     before(function () {
-        const ProtectedRouteController = require('../../../../server/routes/api/ProtectedRouteController.js')(
+        const ProtectedRouteController = require('../../../../server/routes/api/ProtectedRouteController.js').service(
             settingsMock, expressMock, UserRouteControllerMock
         );
     });

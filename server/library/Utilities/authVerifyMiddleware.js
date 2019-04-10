@@ -1,5 +1,7 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('authVerifyMiddleware', __);
+module.exports = {
+    name: 'authVerifyMiddleware', service: __, dependencies: []
+};
+
 function __() {
     const authVerifyMiddleware = (req, res, next) => {
         if (req.isAuthenticated()) {
@@ -12,4 +14,3 @@ function __() {
     };
     return authVerifyMiddleware;
 }
-module.exports = __;

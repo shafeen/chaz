@@ -19,7 +19,7 @@ describe('PublicRouteController', function () {
         };
         const routerGetSpy = sinon.spy(routerMock, 'get');
         expressMock.Router.returns(routerMock);
-        const PublicRouteController = require('../../../../server/routes/api/PublicRouteController.js')(
+        const PublicRouteController = require('../../../../server/routes/api/PublicRouteController.js').service(
             settingsMock, expressMock
         );
         assert.equal(PublicRouteController, routerMock);

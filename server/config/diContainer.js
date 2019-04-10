@@ -1,5 +1,6 @@
 const bottle = new require('bottlejs')('basicmean');
 const settings = require('./settings/settings.json');
+const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
 const express = require('express');
@@ -19,33 +20,62 @@ module.exports.initialize = function () {
     bottle.service('bcrypt', function() { return bcrypt; });
     bottle.service('passport', function() { return passport; });
 
-    // initialize app utility services, middleware, etc
-    const SERVER_FOLDER = '../../server/';
-    const utilitiesToRequire = [
-        `${SERVER_FOLDER}/library/Utilities/authVerifyMiddleware.js`,
-        `${SERVER_FOLDER}/library/Utilities/cacheSetMiddleware.js`,
-        `${SERVER_FOLDER}/library/Utilities/logger.js`,
-        `${SERVER_FOLDER}/library/Utilities/requireUncached.js`
-    ];
-    utilitiesToRequire.forEach(
-        requirePath => require(path.join(__dirname, requirePath))
-    );
-
+    // ----------------------
+    // AutoScan to BottleJS:
+    // ----------------------
     // initialize app services, controllers and other components
-    const componentsToRequire = [
-        `${SERVER_FOLDER}/models/UserModel.js`,
-        `${SERVER_FOLDER}/library/Repositories/UserRepository.js`,
-        `${SERVER_FOLDER}/routes/PartialsRouteController.js`,
-        `${SERVER_FOLDER}/routes/IndexRouteController.js`,
-        `${SERVER_FOLDER}/routes/ApiRouteController.js`,
-        `${SERVER_FOLDER}/routes/AuthenticateRouteController.js`,
-        `${SERVER_FOLDER}/routes/api/PublicRouteController.js`,
-        `${SERVER_FOLDER}/routes/api/ProtectedRouteController.js`,
-        `${SERVER_FOLDER}/routes/api/protected/UserRouteController.js`
+    // initialize app utility services, middleware, etc
+
+    // update this list when you want to add more folders to scan
+    const FOLDERS_TO_RECURSIVELY_SCAN = [
+        '../library',
+        '../models',
+        '../routes'
     ];
-    componentsToRequire.forEach(
-        requirePath => require(path.join(__dirname, requirePath))
-    );
+
+    const bottleRegisterFilesInDirectory = function (absoluteDirectoryPath) {
+        const allDirectoryItemsWithAbsolutePath = fs.readdirSync(absoluteDirectoryPath)
+            .map(name => `${absoluteDirectoryPath}/${name}`);
+        const jsBottleTargets= allDirectoryItemsWithAbsolutePath.filter(absoluteItemPath =>
+            absoluteItemPath.endsWith('.js') &&
+            !fs.lstatSync(absoluteItemPath, {withFileTypes: true}).isDirectory() &&
+            isBottleTarget(absoluteItemPath)
+        );
+        jsBottleTargets.forEach(registerToBottle);
+
+        const directoriesWithAbsolutePath = allDirectoryItemsWithAbsolutePath.filter(absoluteItemPath =>
+            fs.lstatSync(absoluteItemPath, {withFileTypes: true}).isDirectory()
+        );
+        directoriesWithAbsolutePath.forEach(bottleRegisterFilesInDirectory);
+    };
+
+    const isBottleTarget = function (absolutePathForFile) {
+        const potentialTargetModule = require(absolutePathForFile);
+        const properties = new Set(Object.keys(potentialTargetModule));
+        const NAME='name', SERVICE='service', DEPENDENCIES='dependencies';
+        const required = [ NAME, SERVICE, DEPENDENCIES ];
+        if (required.every(requiredProperty => properties.has(requiredProperty)) &&
+            typeof potentialTargetModule[NAME] === 'string' &&
+            typeof potentialTargetModule[SERVICE] === 'function' &&
+            Array.isArray(potentialTargetModule[DEPENDENCIES]) &&
+            potentialTargetModule[DEPENDENCIES].length === potentialTargetModule[SERVICE].length
+        ) {
+            return true;
+        }
+    };
+
+    const registerToBottle = function (absolutePathForFile) {
+        const moduleToRegister = require(absolutePathForFile);
+        bottle.service(
+            moduleToRegister.name,
+            moduleToRegister.service,
+            ...moduleToRegister.dependencies
+        );
+    };
+
+    FOLDERS_TO_RECURSIVELY_SCAN.forEach(folderRelativePath => {
+        bottleRegisterFilesInDirectory(path.join(__dirname, folderRelativePath));
+    });
 
     return bottle;
 };

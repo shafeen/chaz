@@ -1,7 +1,8 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('IndexRouteController', __,
-    'express', 'ApiRouteController', 'AuthenticateRouteController', 'PartialsRouteController'
-);
+module.exports = {
+    name: 'IndexRouteController', service: __,
+    dependencies: ['express', 'ApiRouteController', 'AuthenticateRouteController', 'PartialsRouteController']
+};
+
 function __(express, ApiRouteController, AuthenticateRouteController, PartialsRouteController) {
     const router = express.Router();
     const AUTHENTICATE_BASE_URL = '/authenticate';
@@ -54,4 +55,3 @@ function __(express, ApiRouteController, AuthenticateRouteController, PartialsRo
 
     return router;
 }
-module.exports = __;

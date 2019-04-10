@@ -1,5 +1,8 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('AuthenticateRouteController', __, 'passport', 'express', 'logger');
+module.exports = {
+    name: 'AuthenticateRouteController', service: __,
+    dependencies: ['passport', 'express', 'logger']
+};
+
 function __(passport, express, logger) {
     const router = express.Router();
 
@@ -71,4 +74,3 @@ function __(passport, express, logger) {
 
     return router;
 }
-module.exports = __;

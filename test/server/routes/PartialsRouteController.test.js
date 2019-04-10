@@ -19,7 +19,7 @@ describe('PartialsRouteController', function () {
     expressMock.Router.returns(routerMock);
 
     before(function () {
-        const PartialsRouteController = require('../../../server/routes/PartialsRouteController.js')(
+        const PartialsRouteController = require('../../../server/routes/PartialsRouteController.js').service(
             settingsMock, expressMock
         );
     });

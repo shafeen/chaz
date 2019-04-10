@@ -1,5 +1,7 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('requireUncached', __, 'path', 'require');
+module.exports = {
+    name: 'requireUncached', service: __, dependencies: ['path', 'require']
+};
+
 function __(path, require) {
     /**
      * @param {string} requirePath
@@ -12,4 +14,3 @@ function __(path, require) {
     };
     return requireUncached;
 }
-module.exports = __;

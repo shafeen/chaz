@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 const sinon = require('sinon');
 
-const authVerifyMiddleware = require('../../../../server/library/Utilities/authVerifyMiddleware.js')();
+const authVerifyMiddleware = require('../../../../server/library/Utilities/authVerifyMiddleware.js').service();
 
 describe('authVerifyMiddleware', function () {
 

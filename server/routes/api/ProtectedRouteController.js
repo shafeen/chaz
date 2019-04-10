@@ -1,5 +1,8 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('ProtectedRouteController', __, 'settings', 'express', 'UserRouteController');
+module.exports = {
+    name: 'ProtectedRouteController', service: __,
+    dependencies: ['settings', 'express', 'UserRouteController']
+};
+
 // protected /api routes
 // ---------------------
 function __(settings, express, UserRouteController) {
@@ -19,4 +22,3 @@ function __(settings, express, UserRouteController) {
 
     return router;
 }
-module.exports = __;

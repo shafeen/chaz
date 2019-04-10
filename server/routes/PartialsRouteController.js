@@ -1,5 +1,8 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('PartialsRouteController', __, 'settings', 'express', 'authVerifyMiddleware');
+module.exports = {
+    name: 'PartialsRouteController', service: __,
+    dependencies: ['settings', 'express', 'authVerifyMiddleware']
+};
+
 function __(settings, express, authVerifyMiddleware) {
     const router = express.Router();
     const NG_CLIENT_RELATIVE_PATH = '../../client/ng-client/'; // TODO: use the DI container for this
@@ -17,4 +20,3 @@ function __(settings, express, authVerifyMiddleware) {
 
     return router;
 }
-module.exports = __;

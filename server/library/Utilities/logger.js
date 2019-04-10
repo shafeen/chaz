@@ -1,5 +1,7 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('logger', __, 'debug');
+module.exports = {
+    name: 'logger', service: __, dependencies: [ 'debug' ]
+};
+
 function __(debug) {
     return {
         error: debug('error'),
@@ -10,4 +12,3 @@ function __(debug) {
         silly: debug('silly'),
     }
 }
-module.exports = __;

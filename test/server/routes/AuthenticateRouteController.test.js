@@ -27,7 +27,7 @@ describe('AuthenticateRouteController', function () {
     const loggerMock = {info: sinon.stub()};
 
     before(function () {
-        const AuthenticateRouteController = require('../../../server/routes/AuthenticateRouteController.js')(
+        const AuthenticateRouteController = require('../../../server/routes/AuthenticateRouteController.js').service(
             passportMock, expressMock, loggerMock
         );
         // TODO: improve code testing coverage here

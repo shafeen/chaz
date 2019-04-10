@@ -1,5 +1,7 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('cacheSetMiddleware', __);
+module.exports = {
+    name: 'cacheSetMiddleware', service: __, dependencies: []
+};
+
 function __() {
     const cacheSetMiddleware = (req, res, next) => {
         let oneHour = 3600;
@@ -8,4 +10,3 @@ function __() {
     };
     return cacheSetMiddleware;
 }
-module.exports = __;

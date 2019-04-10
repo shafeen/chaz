@@ -1,5 +1,7 @@
-const bottle = require('bottlejs')('basicmean');
-bottle.service('UserRouteController', __, 'settings', 'express');
+module.exports = {
+    name: 'UserRouteController', service: __, dependencies: ['settings', 'express']
+};
+
 function __(settings, express) {
     const router = express.Router();
 
@@ -11,4 +13,3 @@ function __(settings, express) {
 
     return router;
 }
-module.exports = __;

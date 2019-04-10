@@ -9,6 +9,7 @@
     "prepare-dist": "gulp prep-dist",
     "start": "gulp build-nominify-ng-client && PERSISTENCE_TYPE=mongodb DEBUG=warn,error nodemon -e pug,html,js ./server/bin/www",
     "start-nogulp": "PERSISTENCE_TYPE=mongodb DEBUG=${DEBUG},warn,error nodemon -e pug,html,js ./server/bin/www",
+    "start-nogulp-nodb": "DEBUG=${DEBUG},warn,error nodemon -e pug,html,js ./server/bin/www",
     "start-withgulp": "gulp watch-angular | nodemon -e pug,html,js ./server/bin/www",
     "check-coverage": "nyc --include 'server/library/Repositories/**/*.js' --include 'server/library/Utilities/**/*.js' --include 'server/library/POJO/**/*.js' --include 'server/routes/**/*.js' --all mocha --recursive test/server/ --check-coverage --lines 95 --functions 95"
   },
