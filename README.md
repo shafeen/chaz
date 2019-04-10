@@ -7,14 +7,17 @@ basicMEAN
 ---
 
 #### Environment Variables
-
-- `SESSION_STORE`
-    - supports values `memory` and `redis`
-- `REDIS_NETWORK_URL`
-    - only valid if `SESSION_STORE` is set to `redis`
-    - if not set, defaults to `localhost`
+- `PERSISTENCE_TYPE`
+    - possible values [`mongodb`]
 - `MONGODB_NETWORK_URL`
+    - requires that the `PERSISTENCE_TYPE` environment variable above is set to `mongodb` to have any effect
     - if not set, defaults to `localhost`
+- `SESSION_STORE`
+    - possible values [`memory`, `redis`]
+- `REDIS_NETWORK_URL`
+    - requires that the `SESSION_STORE` environment variable is set to `redis` to have any effect
+    - if not set, defaults to `localhost`
+
 
 
 #### Authentication
