@@ -22,6 +22,13 @@ const passportConfig = require('./config/passport.js');
 passportConfig(passport);
 
 const app = express();
+const metricsApp = express();
+
+// set up metrics endpoint in the metricsApp
+metricsApp.use('/metrics', (req, res) => {
+    const { Prometheus } = bottle.container;
+    res.send(Prometheus.register.metrics());
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -77,4 +84,4 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-module.exports = app;
+module.exports = { app: app, metricsApp: metricsApp };

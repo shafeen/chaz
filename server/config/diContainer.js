@@ -7,18 +7,21 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const passport = require('passport');
+const moment = require('moment');
 
 module.exports.initialize = function () {
     // initialize constants and system services
+    bottle.constant('APPLICATION_NAME', 'chaz');
     bottle.constant('ASSETS_FOLDER', path.join(__dirname, '../../../assets'));
-    bottle.service('settings', function() { return settings; });
     bottle.service('require', function() { return require; });
+    bottle.service('settings', function() { return settings; });
     bottle.service('path', function() { return path; });
     bottle.service('debug', function() { return debug; });
     bottle.service('express', function() { return express; });
     bottle.service('mongoose', function() { return mongoose; });
     bottle.service('bcrypt', function() { return bcrypt; });
     bottle.service('passport', function() { return passport; });
+    bottle.service('moment', function() { return moment; });
 
     // ----------------------
     // AutoScan to BottleJS:

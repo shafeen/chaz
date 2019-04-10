@@ -1,8 +1,8 @@
-basicMEAN 
+chaz :smirk_cat: 
 ---
 [![Build Status](https://travis-ci.org/shafeen/basicMEAN.svg?branch=master)](https://travis-ci.org/shafeen/basicMEAN)
 
-##### An opinionated web starter project to use for websites and web applications
+##### An opinionated project to use for backend applications with a lightweight ui.
 
 ---
 
@@ -17,7 +17,12 @@ basicMEAN
 - `REDIS_NETWORK_URL`
     - requires that the `SESSION_STORE` environment variable is set to `redis` to have any effect
     - if not set, defaults to `localhost`
+- `METRICS_PORT`
+    - if set, emits prometheus metrics on this port instead of the default `9000`
 
+
+#### Metrics
+This service emits prometheus metrics on port `9000` by default, set the environment variable `METRICS_PORT` to change that. 
 
 
 #### Authentication

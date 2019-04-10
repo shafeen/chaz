@@ -1,11 +1,21 @@
 module.exports = {
     name: 'IndexRouteController', service: __,
-    dependencies: ['express', 'ApiRouteController', 'AuthenticateRouteController', 'PartialsRouteController']
+    dependencies: ['express', 'ApiRouteController', 'AuthenticateRouteController', 'PartialsRouteController', 'Metrics']
 };
 
-function __(express, ApiRouteController, AuthenticateRouteController, PartialsRouteController) {
+function __(express, ApiRouteController, AuthenticateRouteController, PartialsRouteController, Metrics) {
     const router = express.Router();
     const AUTHENTICATE_BASE_URL = '/authenticate';
+
+    router.use((req, res, next) => {
+        Metrics.throughputCounter.inc();
+        let startTimeMs = new Date().getTime();
+        res.on('finish', () => {
+            let endTimeMs = new Date().getTime();
+            Metrics.latencyGauge.set({ path : req.originalUrl, statusCode: res.statusCode }, endTimeMs - startTimeMs);
+        });
+        next();
+    });
 
     router.get('/', function (req, res) {
         if (req.isAuthenticated()) {

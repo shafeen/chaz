@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+const { app, metricsApp } = require('../app');
 var debug = require('debug')('http');
 var http = require('http');
 
@@ -15,19 +15,27 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+var metricsPort = normalizePort(process.env.METRICS_PORT || '9000');
+metricsApp.set('port', metricsPort);
+
 /**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
+var metricsServer = http.createServer(metricsApp);
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Listen on provided port and metricsPort, on all network interfaces.
  */
 
 server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+server.on('error', onErrorGenerator(port));
+server.on('listening', onListeningGenerator(server));
+
+metricsServer.listen(metricsPort);
+metricsServer.on('error', onErrorGenerator(metricsPort));
+metricsServer.on('listening', onListeningGenerator(metricsServer));
 
 /**
  * Normalize a port into a number, string, or false.
@@ -53,38 +61,42 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
+function onErrorGenerator(port) {
+  return function onError(error) {
+    if (error.syscall !== 'listen') {
       throw error;
-  }
+    }
+
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+      case 'EACCES':
+        console.error(bind + ' requires elevated privileges');
+        process.exit(1);
+        break;
+      case 'EADDRINUSE':
+        console.error(bind + ' is already in use');
+        process.exit(1);
+        break;
+      default:
+        throw error;
+    }
+  };
 }
 
 /**
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+function onListeningGenerator(server) {
+  return function onListening() {
+    let addr = server.address();
+    let bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+  };
 }
