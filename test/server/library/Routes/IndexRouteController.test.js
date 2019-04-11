@@ -20,7 +20,7 @@ describe('IndexRouteController', function () {
     const PartialsRouteControllerMock = sinon.stub();
 
     before(function () {
-        const IndexRouteController = require('../../../server/routes/IndexRouteController.js').service(
+        const IndexRouteController = require('../../../../server/library/Routes/IndexRouteController.js').service(
             expressMock, ApiRouteControllerMock, AuthenticateRouteControllerMock, PartialsRouteControllerMock
         );
     });

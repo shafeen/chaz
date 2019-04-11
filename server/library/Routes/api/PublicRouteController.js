@@ -2,7 +2,7 @@ module.exports = {
     name: 'PublicRouteController', service: __, dependencies: ['settings', 'express']
 };
 
-// public /api routes
+// public /api Routes
 // ------------------
 function __(settings, express) {
     const router = express.Router();

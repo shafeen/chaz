@@ -17,7 +17,7 @@ function __(passport, express, logger) {
         res.redirect(URL_LOGOUT_SUCCESS);
     });
 
-    // Non-ajax signup routes
+    // Non-ajax signup Routes
     // router.post('/signup', function(req, res, next){
     //     logger.info('Starting Signup..');
     //     return next();
@@ -45,7 +45,7 @@ function __(passport, express, logger) {
         })(req, res, next);
     });
 
-    // Non-ajax login routes
+    // Non-ajax login Routes
     // router.post('/login', function(req, res, next){
     //     logger.info('Starting Log in process..');
     //     return next();

@@ -11,7 +11,7 @@ describe('ApiRouteController', function () {
     const authVerifyMiddlewareMock = sinon.stub();
 
     before(function () {
-        const ApiRouteController = require('../../../server/routes/ApiRouteController.js').service(
+        const ApiRouteController = require('../../../../server/library/Routes/ApiRouteController.js').service(
             settingsMock,
             expressMock,
             PublicRouteControllerMock,

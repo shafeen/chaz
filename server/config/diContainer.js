@@ -31,9 +31,7 @@ module.exports.initialize = function () {
 
     // update this list when you want to add more folders to scan
     const FOLDERS_TO_RECURSIVELY_SCAN = [
-        '../library',
-        '../models',
-        '../routes'
+        '../library'
     ];
 
     const bottleRegisterFilesInDirectory = function (absoluteDirectoryPath) {

@@ -59,7 +59,7 @@ function __(express, ApiRouteController, AuthenticateRouteController, PartialsRo
     router.use('/api', ApiRouteController);
 
     router.use(/.*/, (req, res) => {
-        // Redirect to the home page if no routes match
+        // Redirect to the home page if no Routes match
         res.redirect('/');
     });
 

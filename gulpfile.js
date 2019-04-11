@@ -44,23 +44,6 @@ gulp.task('js-concat-minify', () => {
         .pipe(gulp.dest('./client/public/build/min-js/'));
 });
 
-gulp.task('prep-dist', ['build-ng-client'], () => {
-    const DIST_BASE = './dist';
-    // copy clientside files
-    gulp.src(['./client/ng-client/**/*.pug', './client/ng-client-secure/**/*.pug', './client/public/**/*'], {base: './'})
-        .pipe(gulp.dest(DIST_BASE));
-    // copy serverside files
-    return gulp.src(['./server/bin/**/*',
-        './server/config/**/*',
-        './server/models/**/*',
-        './server/routes/**/*',
-        './server/views/**/*',
-        './server/*.js',
-        './*.js',
-        './*.json'], {base: './'})
-        .pipe(gulp.dest(DIST_BASE));
-});
-
 const buildUtil = {
     buildWithoutMinifyJs: function (jsFilesGlob, concatFileName) {
         let jsFiles = gulp.src(jsFilesGlob);

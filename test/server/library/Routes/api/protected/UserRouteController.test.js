@@ -15,7 +15,7 @@ describe('UserRouteController', function () {
 
     before(function () {
         const UserRouteController = require(
-            '../../../../../server/routes/api/protected/UserRouteController.js').service(
+            '../../../../../../server/library/Routes/api/protected/UserRouteController.js').service(
             settingsMock, expressMock
         );
     });

@@ -3,7 +3,7 @@ module.exports = {
     dependencies: ['settings', 'express', 'UserRouteController']
 };
 
-// protected /api routes
+// protected /api Routes
 // ---------------------
 function __(settings, express, UserRouteController) {
     const router = express.Router();
