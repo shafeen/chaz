@@ -9,6 +9,8 @@ const bcrypt = require('bcrypt-nodejs');
 const passport = require('passport');
 const moment = require('moment');
 
+let OrderedApplicationRunnersInBottle = null;
+
 module.exports.initialize = function () {
     // initialize constants and system services
     bottle.constant('APPLICATION_NAME', 'chaz');
@@ -74,9 +76,38 @@ module.exports.initialize = function () {
         );
     };
 
-    FOLDERS_TO_RECURSIVELY_SCAN.forEach(folderRelativePath => {
-        bottleRegisterFilesInDirectory(path.join(__dirname, folderRelativePath));
-    });
+    const setupInjectables = function () {
+        FOLDERS_TO_RECURSIVELY_SCAN.forEach(folderRelativePath => {
+            bottleRegisterFilesInDirectory(path.join(__dirname, folderRelativePath));
+        });
+    };
+
+    const findSortApplicationRunners = function () {
+        const APP_RUNNNER_DIR = './ApplicationRunner';
+        bottleRegisterFilesInDirectory(path.join(__dirname, APP_RUNNNER_DIR));
+
+        const { ApplicationRunner } = bottle.container;
+        OrderedApplicationRunnersInBottle = Object.keys(bottle.container)
+            .map(injectableName => bottle.container[injectableName])
+            .filter(injectable =>
+                typeof injectable === 'function' &&
+                ApplicationRunner.isPrototypeOf(injectable)
+            )
+            .map(ApplicationRunnerSubClass => new ApplicationRunnerSubClass())
+            .sort((subclass1, subclass2) =>
+                subclass1.order() < subclass2.order()? -1: 1
+            );
+    };
+
+    setupInjectables();
+    findSortApplicationRunners();
 
     return bottle;
+};
+
+// This should be called separately in app.js after all injectables initialized
+module.exports.setupApplicationRunners = function () {
+    if (OrderedApplicationRunnersInBottle && Array.isArray(OrderedApplicationRunnersInBottle)) {
+        OrderedApplicationRunnersInBottle.forEach(runner => runner.run());
+    }
 };

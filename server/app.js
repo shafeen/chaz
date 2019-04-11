@@ -11,7 +11,8 @@ const passport = require('passport');
 const flash = require('express-flash');
 
 // configure DI container
-const bottle = require('./config/diContainer.js').initialize();
+const diContainer = require('./config/diContainer.js');
+const bottle = diContainer.initialize();
 
 // connect to the database -- NOTE: uncomment when you're ready to add in persistence
 const databaseConfig = require('./config/database.js');
@@ -20,6 +21,9 @@ databaseConfig(mongoose);
 // configure passportjs for login and signup
 const passportConfig = require('./config/passport.js');
 passportConfig(passport);
+
+// initialize ApplicationRunners after all injectables ready
+diContainer.setupApplicationRunners();
 
 const app = express();
 const metricsApp = express();
