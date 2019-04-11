@@ -38,9 +38,7 @@
     "prom-client": "^11.3.0",
     "pug": "^2.0.3",
     "sequelize": "^4.36.0",
-    "serve-favicon": "^2.5.0",
-    "shuffle-seed": "^1.1.6",
-    "uuid": "^3.0.1"
+    "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
     "browserify": "^16.2.2",
