@@ -14,7 +14,7 @@ describe('UserRepository', function () {
     sinon.spy(UserModelMock);
     UserModelMock.findOne = sinon.stub();
     UserModelMock.findOne.returns({exec: sinon.stub()});
-    const UserRepository = require('../../../../server/library/Repositories/UserRepository.js')
+    const UserRepository = require('../../../../server/src/Repositories/UserRepository.js')
         .service(UserModelMock);
 
     it('#findSingleUser should invoke UserModel.findOne (nonempty options)', function () {

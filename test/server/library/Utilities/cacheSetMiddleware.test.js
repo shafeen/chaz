@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 const sinon = require('sinon');
 
-const cacheSetMiddleware = require('../../../../server/library/Utilities/cacheSetMiddleware.js').service();
+const cacheSetMiddleware = require('../../../../server/src/Utilities/cacheSetMiddleware.js').service();
 
 describe('cacheSetMiddleware', function () {
 
