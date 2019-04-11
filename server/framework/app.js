@@ -35,7 +35,7 @@ metricsApp.use('/metrics', (req, res) => {
 });
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
@@ -51,9 +51,9 @@ app.use(function denyTemplateFiles(req, res, next) {
         next();
     }
 });
-app.use(express.static(path.join(__dirname, '..', 'client', 'ng-client')));
-app.use(express.static(path.join(__dirname, '..', 'client', 'ng-client-secure')));
-app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
+app.use(express.static(path.join(__dirname, '..', '..', 'client', 'ng-client')));
+app.use(express.static(path.join(__dirname, '..', '..', 'client', 'ng-client-secure')));
+app.use(express.static(path.join(__dirname, '..', '..', 'client', 'public')));
 app.use('/settings', express.static(path.join(__dirname, 'config', 'settings')));
 
 // setup app to use passportjs

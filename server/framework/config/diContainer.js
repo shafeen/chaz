@@ -33,7 +33,7 @@ module.exports.initialize = function () {
 
     // update this list when you want to add more folders to scan
     const FOLDERS_TO_RECURSIVELY_SCAN = [
-        '../src'
+        '../../src'
     ];
 
     const bottleRegisterFilesInDirectory = function (absoluteDirectoryPath) {
