@@ -54,12 +54,29 @@ module.exports.initialize = function () {
         const properties = new Set(Object.keys(potentialTargetModule));
         const NAME='name', SERVICE='service', DEPENDENCIES='dependencies';
         const required = [ NAME, SERVICE, DEPENDENCIES ];
-        if (required.every(requiredProperty => properties.has(requiredProperty)) &&
-            typeof potentialTargetModule[NAME] === 'string' &&
-            typeof potentialTargetModule[SERVICE] === 'function' &&
-            Array.isArray(potentialTargetModule[DEPENDENCIES]) &&
-            potentialTargetModule[DEPENDENCIES].length === potentialTargetModule[SERVICE].length
-        ) {
+        const isComponentForDIContainer = required.every(
+            requiredProperty => properties.has(requiredProperty)
+        );
+        if (isComponentForDIContainer) {
+            // Run Validation checks for declared Components
+            if (typeof potentialTargetModule[NAME] !== 'string') {
+                throw new Error(`"${absolutePathForFile}": Component "${NAME}" attribute must be a string!`);
+            }
+            if (potentialTargetModule[NAME].length === 0) {
+                throw new Error(`"${absolutePathForFile}": Component "${NAME}" attribute cannot be an empty string!`);
+            }
+            if (typeof potentialTargetModule[SERVICE] !== 'function') {
+                throw new Error(`"${absolutePathForFile}": Component "${SERVICE}" attribute must be a function!`);
+            }
+            if (Array.isArray(potentialTargetModule[DEPENDENCIES]) === false) {
+                throw new Error(`"${absolutePathForFile}": Component "${DEPENDENCIES}" attribute must be an array!`);
+            }
+            if (potentialTargetModule[DEPENDENCIES].length !== potentialTargetModule[SERVICE].length) {
+                throw new Error(
+                    `"${absolutePathForFile}": Component "${DEPENDENCIES}" list doesn't match "${SERVICE}" function parameter count! ` +
+                    `Function "${SERVICE}" expecting ${potentialTargetModule[SERVICE].length} parameters, getting ${potentialTargetModule[DEPENDENCIES].length} from "${DEPENDENCIES}".`
+                );
+            }
             return true;
         }
     };
