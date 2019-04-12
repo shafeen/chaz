@@ -1,6 +1,6 @@
 module.exports = {
     name: 'AuthenticateRouteController', service: __,
-    dependencies: ['passport', 'express', 'logger']
+    dependencies: ['require(passport)', 'require(express)', 'logger']
 };
 
 function __(passport, express, logger) {

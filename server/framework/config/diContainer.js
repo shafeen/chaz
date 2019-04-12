@@ -1,33 +1,24 @@
-const bottle = new require('bottlejs')('basicmean');
+const bottle = new require('bottlejs')('chaz'); // TODO: make the application name a constant
 const settings = require('./settings/settings.json');
 const fs = require('fs');
 const path = require('path');
-const debug = require('debug');
-const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
-const passport = require('passport');
-const moment = require('moment');
 
-let OrderedApplicationRunnersInBottle = null;
+let OrderedApplicationRunnersInBottle = [];
+let modulesToRequire = new Set();
+const componentList = [];
+let requireModulesRegistrationComplete = false;
 
 module.exports.initialize = function () {
     // initialize constants and system services
     bottle.constant('APPLICATION_NAME', 'chaz');
     bottle.constant('ASSETS_FOLDER', path.join(__dirname, '../../../assets'));
     bottle.service('require', function() { return require; });
-    bottle.service('settings', function() { return settings; });
-    bottle.service('path', function() { return path; });
-    bottle.service('debug', function() { return debug; });
-    bottle.service('express', function() { return express; });
-    bottle.service('mongoose', function() { return mongoose; });
-    bottle.service('bcrypt', function() { return bcrypt; });
-    bottle.service('passport', function() { return passport; });
-    bottle.service('moment', function() { return moment; });
+    bottle.service('settings', function() { return settings; }); // TODO: create a resources directory and a resource(..) dependency
 
-    // ----------------------
-    // AutoScan to BottleJS:
-    // ----------------------
+    // --------------------------------
+    // AutoScan Components to BottleJS:
+    // --------------------------------
+    // detect and initialize "require" modules first, then
     // initialize app services, controllers and other components
     // initialize app utility services, middleware, etc
 
@@ -37,6 +28,12 @@ module.exports.initialize = function () {
     ];
 
     const bottleRegisterFilesInDirectory = function (absoluteDirectoryPath) {
+        updateComponentListInDirectory(absoluteDirectoryPath);
+        registerRequireModulesToBottle();
+        registerComponentsToBottle();
+    };
+
+    const updateComponentListInDirectory = function (absoluteDirectoryPath) {
         const allDirectoryItemsWithAbsolutePath = fs.readdirSync(absoluteDirectoryPath)
             .map(name => `${absoluteDirectoryPath}/${name}`);
         const jsBottleTargets= allDirectoryItemsWithAbsolutePath.filter(absoluteItemPath =>
@@ -44,12 +41,12 @@ module.exports.initialize = function () {
             !fs.lstatSync(absoluteItemPath, {withFileTypes: true}).isDirectory() &&
             isBottleTarget(absoluteItemPath)
         );
-        jsBottleTargets.forEach(registerToBottle);
+        jsBottleTargets.forEach(updateComponentList);
 
         const directoriesWithAbsolutePath = allDirectoryItemsWithAbsolutePath.filter(absoluteItemPath =>
             fs.lstatSync(absoluteItemPath, {withFileTypes: true}).isDirectory()
         );
-        directoriesWithAbsolutePath.forEach(bottleRegisterFilesInDirectory);
+        directoriesWithAbsolutePath.forEach(updateComponentListInDirectory);
     };
 
     const isBottleTarget = function (absolutePathForFile) {
@@ -67,13 +64,51 @@ module.exports.initialize = function () {
         }
     };
 
-    const registerToBottle = function (absolutePathForFile) {
+    const updateComponentList = function (absolutePathForFile) {
         const moduleToRegister = require(absolutePathForFile);
-        bottle.service(
-            moduleToRegister.name,
-            moduleToRegister.service,
-            ...moduleToRegister.dependencies
-        );
+        updateDependencyModulesToRequire(moduleToRegister.dependencies);
+        componentList.push(absolutePathForFile);
+    };
+
+    const updateDependencyModulesToRequire = function (dependencyStrList) {
+        const modulesToRequireRegex = /^require\(\s*(.*)\s*\)$/;
+        const dependencyModulesToRequire = dependencyStrList
+            .map(dependencyStr => dependencyStr.trim())
+            .filter(
+                dependencyStr => modulesToRequireRegex.test(dependencyStr)
+            )
+            .map(dependencyStr => modulesToRequireRegex.exec(dependencyStr)[1]);
+        dependencyModulesToRequire.forEach(moduleName => modulesToRequire.add(moduleName));
+    };
+
+    const registerRequireModulesToBottle = function () {
+        const modulesToRequireList = Array.from(modulesToRequire);
+        modulesToRequireList.forEach(moduleToRequire => {
+            bottle.service(
+                `require(${moduleToRequire})`,
+                function () {
+                    return require(moduleToRequire)
+                },
+                ...[]
+            );
+        });
+        requireModulesRegistrationComplete = true;
+    };
+
+    const registerComponentsToBottle = function () {
+        if (!requireModulesRegistrationComplete) {
+            throw new Error(
+                "REQUIRED: 'require' module registration must complete before component registration!"
+            );
+        }
+        componentList.forEach(absolutePathForFile => {
+            const moduleToRegister = require(absolutePathForFile);
+            bottle.service(
+                moduleToRegister.name,
+                moduleToRegister.service,
+                ...moduleToRegister.dependencies
+            );
+        });
     };
 
     const setupInjectables = function () {

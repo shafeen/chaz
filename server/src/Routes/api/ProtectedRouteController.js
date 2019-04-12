@@ -1,6 +1,6 @@
 module.exports = {
     name: 'ProtectedRouteController', service: __,
-    dependencies: ['settings', 'express', 'UserRouteController']
+    dependencies: ['settings', 'require(express)', 'UserRouteController']
 };
 
 // protected /api Routes

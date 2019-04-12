@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const { UserRepository } = require('bottlejs')('basicmean').container;
+const { UserRepository } = require('bottlejs')('chaz').container;
 
 module.exports = function (passport) {
 

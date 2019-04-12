@@ -1,4 +1,4 @@
-const DB_NAME = 'basicmeantest';
+const DB_NAME = 'chaztest';
 
 const PERSISTENCE_MONGODB = 'mongodb';
 const supportedPersistenceTypes = new Set(['mongodb']);
@@ -8,7 +8,7 @@ const MONGODB_NETWORK_URL = process.env.MONGODB_NETWORK_URL || 'localhost';
 const URL = `mongodb://${MONGODB_NETWORK_URL}:27017/${DB_NAME}`;
 const BACKUP_URL = `mongodb://localhost:27017/${DB_NAME}`;
 
-const bottle = require('bottlejs')('basicmean');
+const bottle = require('bottlejs')('chaz');
 const { logger } = bottle.container;
 
 module.exports = function (mongoose) {

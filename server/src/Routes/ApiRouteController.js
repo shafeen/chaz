@@ -1,6 +1,6 @@
 module.exports = {
     name: 'ApiRouteController', service: __,
-    dependencies: ['settings', 'express', 'PublicRouteController', 'ProtectedRouteController', 'authVerifyMiddleware']
+    dependencies: ['settings', 'require(express)', 'PublicRouteController', 'ProtectedRouteController', 'authVerifyMiddleware']
 };
 
 function __(settings, express, PublicRouteController, ProtectedRouteController, authVerifyMiddleware) {

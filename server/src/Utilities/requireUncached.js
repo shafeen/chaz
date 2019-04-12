@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'requireUncached', service: __, dependencies: ['path', 'require']
+    name: 'requireUncached', service: __, dependencies: ['require(path)', 'require']
 };
 
 function __(path, require) {

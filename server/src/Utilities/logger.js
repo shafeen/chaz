@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'logger', service: __, dependencies: [ 'debug' ]
+    name: 'logger', service: __, dependencies: [ 'require(debug)' ]
 };
 
 function __(debug) {

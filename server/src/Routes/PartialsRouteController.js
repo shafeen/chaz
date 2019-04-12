@@ -1,6 +1,6 @@
 module.exports = {
     name: 'PartialsRouteController', service: __,
-    dependencies: ['settings', 'express', 'authVerifyMiddleware']
+    dependencies: ['settings', 'require(express)', 'authVerifyMiddleware']
 };
 
 function __(settings, express, authVerifyMiddleware) {

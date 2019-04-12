@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'UserRouteController', service: __, dependencies: ['settings', 'express']
+    name: 'UserRouteController', service: __, dependencies: ['settings', 'require(express)']
 };
 
 function __(settings, express) {

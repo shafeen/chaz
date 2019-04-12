@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'UserModel', service: __, dependencies: ['mongoose', 'bcrypt']
+    name: 'UserModel', service: __, dependencies: ['require(mongoose)', 'require(bcrypt-nodejs)']
 };
 
 function __(mongoose, bcrypt) {

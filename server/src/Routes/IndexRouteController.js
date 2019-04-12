@@ -1,6 +1,6 @@
 module.exports = {
     name: 'IndexRouteController', service: __,
-    dependencies: ['express', 'ApiRouteController', 'AuthenticateRouteController', 'PartialsRouteController', 'Metrics']
+    dependencies: ['require(express)', 'ApiRouteController', 'AuthenticateRouteController', 'PartialsRouteController', 'Metrics']
 };
 
 function __(express, ApiRouteController, AuthenticateRouteController, PartialsRouteController, Metrics) {

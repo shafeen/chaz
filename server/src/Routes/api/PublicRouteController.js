@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'PublicRouteController', service: __, dependencies: ['settings', 'express']
+    name: 'PublicRouteController', service: __, dependencies: ['settings', 'require(express)']
 };
 
 // public /api Routes
