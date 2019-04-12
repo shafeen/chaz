@@ -67,8 +67,8 @@ const graphqlServer = require('./config/graphqlServer');
 graphqlServer.applyMiddleware({app});
 
 // entry point for application routes
-const { IndexRouteController } = bottle.container;
-app.use('/', IndexRouteController);
+const { RootRouter } = bottle.container;
+app.use('/', RootRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

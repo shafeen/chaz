@@ -10,6 +10,7 @@ let requireModulesRegistrationComplete = false;
 
 // update this list when you want to add more folders to scan
 const SRC_FOLDERS_TO_RECURSIVELY_SCAN = [ '../../src' ];
+const FRAMEWORK_INJECTABLES_FOLDER = './FrameworkInjectables';
 const RESOURCES_FOLDER_TO_RECURSIVELY_SCAN = '../../resources';
 
 module.exports.initialize = function () {
@@ -77,6 +78,8 @@ module.exports.initialize = function () {
                 );
             }
             return true;
+        } else {
+            // TODO: emit a warning here later
         }
     };
 
@@ -167,15 +170,14 @@ module.exports.initialize = function () {
     };
 
     const setupInjectables = function () {
-        SRC_FOLDERS_TO_RECURSIVELY_SCAN.forEach(folderRelativePath => {
-            bottleRegisterFilesInDirectory(path.join(__dirname, folderRelativePath));
-        });
+        SRC_FOLDERS_TO_RECURSIVELY_SCAN.concat(FRAMEWORK_INJECTABLES_FOLDER)
+            .forEach(folderRelativePath => {
+                bottleRegisterFilesInDirectory(path.join(__dirname, folderRelativePath));
+            }
+        );
     };
 
     const findSortApplicationRunners = function () {
-        const APP_RUNNNER_DIR = './ApplicationRunner';
-        bottleRegisterFilesInDirectory(path.join(__dirname, APP_RUNNNER_DIR));
-
         const { ApplicationRunner } = bottle.container;
         OrderedApplicationRunnersInBottle = Object.keys(bottle.container)
             .map(injectableName => bottle.container[injectableName])
