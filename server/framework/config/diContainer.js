@@ -1,19 +1,22 @@
 const bottle = new require('bottlejs')('chaz'); // TODO: make the application name a constant
-const settings = require('./settings/settings.json');
 const fs = require('fs');
 const path = require('path');
 
 let OrderedApplicationRunnersInBottle = [];
 let modulesToRequire = new Set();
+let resourcesToRequire = new Set();
 const componentList = [];
 let requireModulesRegistrationComplete = false;
+
+// update this list when you want to add more folders to scan
+const SRC_FOLDERS_TO_RECURSIVELY_SCAN = [ '../../src' ];
+const RESOURCES_FOLDER_TO_RECURSIVELY_SCAN = '../../resources';
 
 module.exports.initialize = function () {
     // initialize constants and system services
     bottle.constant('APPLICATION_NAME', 'chaz');
     bottle.constant('ASSETS_FOLDER', path.join(__dirname, '../../../assets'));
     bottle.service('require', function() { return require; });
-    bottle.service('settings', function() { return settings; }); // TODO: create a resources directory and a resource(..) dependency
 
     // --------------------------------
     // AutoScan Components to BottleJS:
@@ -22,14 +25,10 @@ module.exports.initialize = function () {
     // initialize app services, controllers and other components
     // initialize app utility services, middleware, etc
 
-    // update this list when you want to add more folders to scan
-    const FOLDERS_TO_RECURSIVELY_SCAN = [
-        '../../src'
-    ];
-
     const bottleRegisterFilesInDirectory = function (absoluteDirectoryPath) {
         updateComponentListInDirectory(absoluteDirectoryPath);
         registerRequireModulesToBottle();
+        registerResourcesToBottle();
         registerComponentsToBottle();
     };
 
@@ -84,6 +83,7 @@ module.exports.initialize = function () {
     const updateComponentList = function (absolutePathForFile) {
         const moduleToRegister = require(absolutePathForFile);
         updateDependencyModulesToRequire(moduleToRegister.dependencies);
+        updateResourceFilesToRequire(moduleToRegister.dependencies, absolutePathForFile);
         componentList.push(absolutePathForFile);
     };
 
@@ -98,6 +98,30 @@ module.exports.initialize = function () {
         dependencyModulesToRequire.forEach(moduleName => modulesToRequire.add(moduleName));
     };
 
+    const updateResourceFilesToRequire = function (dependencyStrList, pathForRequestorComponent) {
+        const resourcesToRequireRegex = /^resource\(\s*(.*)\s*\)$/;
+        const resourceStrsToRequire = dependencyStrList
+            .map(dependencyStr => dependencyStr.trim())
+            .filter(
+                dependencyStr => resourcesToRequireRegex.test(dependencyStr)
+            )
+            .map(dependencyStr => resourcesToRequireRegex.exec(dependencyStr)[1]);
+        resourceStrsToRequire.forEach(resourceRelativePath => {
+            const resourceAbsolutePath = path.join(
+                __dirname,
+                RESOURCES_FOLDER_TO_RECURSIVELY_SCAN,
+                resourceRelativePath
+            );
+            if (!fs.existsSync(resourceAbsolutePath)) {
+                throw new Error(
+                    `'${pathForRequestorComponent}': Can't find file '${resourceRelativePath}' `+
+                    `in the ${path.join(__dirname, RESOURCES_FOLDER_TO_RECURSIVELY_SCAN)} directory`
+                );
+            }
+            resourcesToRequire.add(resourceRelativePath);
+        });
+    };
+
     const registerRequireModulesToBottle = function () {
         const modulesToRequireList = Array.from(modulesToRequire);
         modulesToRequireList.forEach(moduleToRequire => {
@@ -105,6 +129,20 @@ module.exports.initialize = function () {
                 `require(${moduleToRequire})`,
                 function () {
                     return require(moduleToRequire)
+                },
+                ...[]
+            );
+        });
+        requireModulesRegistrationComplete = true;
+    };
+
+    const registerResourcesToBottle = function () {
+        const resourcesToRequireList = Array.from(resourcesToRequire);
+        resourcesToRequireList.forEach(resourceToRequire => {
+            bottle.service(
+                `resource(${resourceToRequire})`,
+                function () {
+                    return require(`${RESOURCES_FOLDER_TO_RECURSIVELY_SCAN}/${resourceToRequire}`)
                 },
                 ...[]
             );
@@ -129,7 +167,7 @@ module.exports.initialize = function () {
     };
 
     const setupInjectables = function () {
-        FOLDERS_TO_RECURSIVELY_SCAN.forEach(folderRelativePath => {
+        SRC_FOLDERS_TO_RECURSIVELY_SCAN.forEach(folderRelativePath => {
             bottleRegisterFilesInDirectory(path.join(__dirname, folderRelativePath));
         });
     };

@@ -54,7 +54,7 @@ app.use(function denyTemplateFiles(req, res, next) {
 app.use(express.static(path.join(__dirname, '..', '..', 'client', 'ng-client')));
 app.use(express.static(path.join(__dirname, '..', '..', 'client', 'ng-client-secure')));
 app.use(express.static(path.join(__dirname, '..', '..', 'client', 'public')));
-app.use('/settings', express.static(path.join(__dirname, 'config', 'settings')));
+app.use('/settings', express.static(path.join(__dirname, '..', 'resources', 'settings')));
 
 // setup app to use passportjs
 app.use(sessionMiddleware(process.env.SESSION_STORE));
