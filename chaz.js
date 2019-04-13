@@ -12,10 +12,11 @@ function getRootProjectDir() {
     return path.posix.dirname(require.main.filename);
 }
 function configureDIContainer(rootDirAbsolutePath) {
-    const diContainer = require('./config/diContainer.js');
+    const diContainer = require('./framework/config/diContainer.js');
     diContainer.initialize(rootDirAbsolutePath);
     // initialize ApplicationRunners after all injectables ready
     diContainer.setupApplicationRunners();
 }
-configureDIContainer(getRootProjectDir());
-module.exports = {};
+module.exports.initialize = function () {
+    configureDIContainer(getRootProjectDir());
+};

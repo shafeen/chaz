@@ -1,24 +1,24 @@
 {
   "name": "chaz-js",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": false,
-  "main": "index.js",
+  "main": "chaz.js",
   "scripts": {
     "serve": "",
-    "debug": "node ./framework/chaz.js",
+    "debug": "node ./run.js",
     "test": "mocha --recursive test/",
-    "start": "DEBUG=${DEBUG},warn,error nodemon -e pug,html,js ./framework/chaz.js",
+    "start": "DEBUG=${DEBUG},warn,error nodemon -e pug,html,js ./run.js",
     "check-coverage": "nyc --include 'src/**/*.js' --all mocha --recursive test/ --check-coverage --lines 95 --functions 95"
   },
   "dependencies": {
     "bottlejs": "^1.7.2",
-    "debug": ">=2.6.9",
-    "nodemon": "^1.18.4"
+    "debug": ">=2.6.9"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.1.2",
     "nyc": "^13.3.0",
-    "sinon": "^7.3.0"
+    "sinon": "^7.3.0",
+    "nodemon": "^1.18.4"
   }
 }

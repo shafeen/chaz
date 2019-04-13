@@ -26,7 +26,6 @@ To kick off the application, make sure you have `chaz` installed: `npm i chaz-js
 type this into your `app.js` file mentioned above:
 
 ```javascript
-
 const chaz = require('chaz-js');
 chaz.initialize();
 ```
@@ -59,7 +58,6 @@ using `npm install <module_name>`). Notice the lack of quotes around the
 
 Example:  
 ```javascript
-
 module.exports = {
     name: "MyFancyServiceClass", 
     service: __,  
@@ -67,7 +65,7 @@ module.exports = {
 };
 
 function __(mongoose, MyService) {
-    // mongoose and MyService will be injected usable in this scope
+    // mongoose and MyService will be injected and usable in this scope
     
     class MyFancyServiceClass {
         constructor() {
@@ -83,5 +81,4 @@ function __(mongoose, MyService) {
     
     return MyFancyServiceClass;
 }
-
 ```
