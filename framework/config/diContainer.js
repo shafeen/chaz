@@ -5,7 +5,8 @@ const path = require('path');
 let OrderedApplicationRunnersInBottle = [];
 let modulesToRequire = new Set();
 let resourcesToRequire = new Set();
-const componentList = [];
+let componentList = [];
+let potentialAppRunnerNameList = [];
 let requireModulesRegistrationComplete = false;
 
 // update this list when you want to add more folders to scan
@@ -13,6 +14,7 @@ const SRC_FOLDERS_TO_RECURSIVELY_SCAN = [ '../../src' ];
 const FRAMEWORK_INJECTABLES_FOLDER = './FrameworkInjectables';
 const RESOURCES_FOLDER_TO_RECURSIVELY_SCAN = '../../resources';
 
+// TODO: add detection for dependencies requested that don't exist (use set/map matching)
 module.exports.initialize = function () {
     // initialize constants and system services
     bottle.constant('APPLICATION_NAME', 'chaz');
@@ -85,6 +87,10 @@ module.exports.initialize = function () {
 
     const updateComponentList = function (absolutePathForFile) {
         const moduleToRegister = require(absolutePathForFile);
+        const APPLICATION_RUNNER_CLASS = 'ApplicationRunner';
+        if (moduleToRegister.dependencies.indexOf(APPLICATION_RUNNER_CLASS) !== -1) {
+            potentialAppRunnerNameList.push(moduleToRegister.name);
+        }
         updateDependencyModulesToRequire(moduleToRegister.dependencies);
         updateResourceFilesToRequire(moduleToRegister.dependencies, absolutePathForFile);
         componentList.push(absolutePathForFile);
@@ -167,10 +173,11 @@ module.exports.initialize = function () {
                 ...moduleToRegister.dependencies
             );
         });
+        componentList = [];
     };
 
     const setupInjectables = function () {
-        SRC_FOLDERS_TO_RECURSIVELY_SCAN.concat(FRAMEWORK_INJECTABLES_FOLDER)
+        SRC_FOLDERS_TO_RECURSIVELY_SCAN.concat([FRAMEWORK_INJECTABLES_FOLDER])
             .forEach(folderRelativePath => {
                 bottleRegisterFilesInDirectory(path.join(__dirname, folderRelativePath));
             }
@@ -179,7 +186,7 @@ module.exports.initialize = function () {
 
     const findSortApplicationRunners = function () {
         const { ApplicationRunner } = bottle.container;
-        OrderedApplicationRunnersInBottle = Object.keys(bottle.container)
+        OrderedApplicationRunnersInBottle = potentialAppRunnerNameList
             .map(injectableName => bottle.container[injectableName])
             .filter(injectable =>
                 typeof injectable === 'function' &&

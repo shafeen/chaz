@@ -1,16 +1,16 @@
 module.exports = {
     name: "Main", service: __,
-    dependencies: ['ApplicationRunner', 'logger', 'resource(settings/settings.json)']
+    dependencies: ['ApplicationRunner', 'Logger', 'resource(settings/settings.json)']
 };
 
-function __(ApplicationRunner, logger, settings) {
+function __(ApplicationRunner, Logger, settings) {
 
     class Main extends ApplicationRunner {
         order() {return 0;}
 
         run() {
-            logger.warn(`Starting sample ApplicationRunner class '${this.constructor.name}'`);
-            logger.warn(settings.msg);
+            Logger.warn(`Starting sample ApplicationRunner class '${this.constructor.name}'`);
+            Logger.warn(settings.msg);
         }
 
     }

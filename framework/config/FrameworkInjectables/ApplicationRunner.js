@@ -1,8 +1,8 @@
 module.exports = {
-    name: 'ApplicationRunner', service: __, dependencies: ['logger'],
+    name: 'ApplicationRunner', service: __, dependencies: ['Logger'],
 };
 
-function __(logger) {
+function __(Logger) {
 
     class ApplicationRunner {
         constructor() {
@@ -16,8 +16,8 @@ function __(logger) {
 
         /** @return {int} */
         order() {
-            logger.warn(
-                `Returning the default order (1) for ApplicationRunner class "${this.constructor.name}". ` +
+            Logger.warn(
+                `Using default order (1) for ApplicationRunner class "${this.constructor.name}". ` +
                 'This is usually fine but you might want to change this if you ' +
                 'have multiple ApplicationRunner subclasses you want to control the order of.'
             );
