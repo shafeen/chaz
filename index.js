@@ -1,3 +1,3 @@
-module.exports.chaz = function () {
+module.exports.initialize = function () {
     require('./framework/chaz.js');
 };
