@@ -1,12 +1,11 @@
 {
-  "name": "chaz",
+  "name": "chaz-js",
   "version": "0.1.0",
   "private": false,
   "scripts": {
     "serve": "",
     "debug": "node ./framework/chaz.js",
     "test": "mocha --recursive test/",
-    "prepare-dist": "gulp prep-dist",
     "start": "DEBUG=${DEBUG},warn,error nodemon -e pug,html,js ./framework/chaz.js",
     "check-coverage": "nyc --include 'src/**/*.js' --all mocha --recursive test/ --check-coverage --lines 95 --functions 95"
   },
