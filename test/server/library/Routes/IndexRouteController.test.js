@@ -3,6 +3,7 @@ const sinon = require('sinon');
 
 describe('IndexRouteController', function () {
     const expressMock = {Router: sinon.stub()};
+    const RootRouterMock = {use: sinon.stub()};
     const routeToMiddlewareMap = new Map();
     const routeToMiddlewareCaptor = function (route, effectiveMiddleware) {
         route = (typeof route === 'object')? route.toString() : route;
@@ -21,8 +22,13 @@ describe('IndexRouteController', function () {
 
     before(function () {
         const IndexRouteController = require('../../../../server/src/Routes/IndexRouteController.js').service(
-            expressMock, ApiRouteControllerMock, AuthenticateRouteControllerMock, PartialsRouteControllerMock
+            expressMock, RootRouterMock, ApiRouteControllerMock, AuthenticateRouteControllerMock, PartialsRouteControllerMock
         );
+    });
+
+    it('should register its express router with the RootRouter\'s "/" route', function () {
+        assert.isTrue(RootRouterMock.use.calledOnce);
+        assert.isTrue(RootRouterMock.use.calledWith('/', routerMock));
     });
 
     it('should register a GET / (root) route where authentication is verified', function () {
