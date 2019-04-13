@@ -1,7 +1,7 @@
 {
   "name": "chaz",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "serve": "",
     "debug": "node ./framework/chaz.js",
@@ -11,38 +11,14 @@
     "check-coverage": "nyc --include 'src/**/*.js' --all mocha --recursive test/ --check-coverage --lines 95 --functions 95"
   },
   "dependencies": {
-    "@uirouter/angularjs": "^1.0.14",
     "bottlejs": "^1.7.2",
     "debug": ">=2.6.9",
-    "express": "^4.16.3",
-    "express-flash": "0.0.2",
-    "express-session": "^1.14.2",
-    "moment": "^2.24.0",
-    "nodemon": "^1.18.4",
-    "prom-client": "^11.3.0"
+    "nodemon": "^1.18.4"
   },
   "devDependencies": {
-    "browserify": "^16.2.2",
     "chai": "^4.2.0",
-    "gulp": "^3.9.1",
-    "gulp-buffer": "0.0.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-deporder": "^1.1.0",
-    "gulp-file": "^0.3.0",
-    "gulp-inject": "^4.2.0",
-    "gulp-inject-string": "^1.1.0",
-    "gulp-load-plugins": "^1.5.0",
-    "gulp-obfuscate": "^0.2.9",
-    "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-strip-debug": "^1.1.0",
-    "gulp-tap": "^1.0.1",
-    "gulp-uglify-es": "^1.0.4",
-    "gulp-watch": "^4.3.11",
     "mocha": "^6.1.2",
     "nyc": "^13.3.0",
-    "pump": "^1.0.2",
-    "sinon": "^7.3.0",
-    "yargs": "^8.0.2"
+    "sinon": "^7.3.0"
   }
 }
