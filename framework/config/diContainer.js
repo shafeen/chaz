@@ -9,16 +9,15 @@ let componentList = [];
 let potentialAppRunnerNameList = [];
 let requireModulesRegistrationComplete = false;
 
-// update this list when you want to add more folders to scan
-const SRC_FOLDERS_TO_RECURSIVELY_SCAN = [ '../../src' ];
-const FRAMEWORK_INJECTABLES_FOLDER = './FrameworkInjectables';
-const RESOURCES_FOLDER_TO_RECURSIVELY_SCAN = '../../resources';
-
 // TODO: add detection for dependencies requested that don't exist (use set/map matching)
-module.exports.initialize = function () {
+module.exports.initialize = function (rootProjectDirAbsPath) {
+    // update this list when you want to add more folders to scan
+    const SRC_FOLDERS_TO_RECURSIVELY_SCAN = [ `${rootProjectDirAbsPath}/src` ];
+    const FRAMEWORK_INJECTABLES_FOLDER = path.join(__dirname, 'FrameworkInjectables');
+    const RESOURCES_FOLDER_TO_RECURSIVELY_SCAN = `${rootProjectDirAbsPath}/resources`;
+
     // initialize constants and system services
     bottle.constant('APPLICATION_NAME', 'chaz');
-    bottle.constant('ASSETS_FOLDER', path.join(__dirname, '../../../assets'));
     bottle.service('require', function() { return require; });
 
     // --------------------------------
@@ -117,14 +116,13 @@ module.exports.initialize = function () {
             .map(dependencyStr => resourcesToRequireRegex.exec(dependencyStr)[1]);
         resourceStrsToRequire.forEach(resourceRelativePath => {
             const resourceAbsolutePath = path.join(
-                __dirname,
                 RESOURCES_FOLDER_TO_RECURSIVELY_SCAN,
                 resourceRelativePath
             );
             if (!fs.existsSync(resourceAbsolutePath)) {
                 throw new Error(
                     `'${pathForRequestorComponent}': Can't find file '${resourceRelativePath}' `+
-                    `in the ${path.join(__dirname, RESOURCES_FOLDER_TO_RECURSIVELY_SCAN)} directory`
+                    `in the ${path.join(RESOURCES_FOLDER_TO_RECURSIVELY_SCAN)} directory`
                 );
             }
             resourcesToRequire.add(resourceRelativePath);
@@ -142,6 +140,7 @@ module.exports.initialize = function () {
                 ...[]
             );
         });
+        modulesToRequire.clear();
         requireModulesRegistrationComplete = true;
     };
 
@@ -179,7 +178,7 @@ module.exports.initialize = function () {
     const setupInjectables = function () {
         SRC_FOLDERS_TO_RECURSIVELY_SCAN.concat([FRAMEWORK_INJECTABLES_FOLDER])
             .forEach(folderRelativePath => {
-                bottleRegisterFilesInDirectory(path.join(__dirname, folderRelativePath));
+                bottleRegisterFilesInDirectory(path.join(folderRelativePath));
             }
         );
     };
