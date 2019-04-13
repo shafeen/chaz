@@ -4,7 +4,7 @@ chaz :smirk_cat:
 
 [![Build Status](https://travis-ci.org/shafeen/chaz.svg?branch=master)](https://travis-ci.org/shafeen/chaz)
 
-##### An lightweight and gently opinionated framework to use for your applications.
+##### A lightweight and gently opinionated framework to use for your applications.
 
 ---
 
