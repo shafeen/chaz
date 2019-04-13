@@ -1,6 +1,6 @@
 module.exports = {
     name: "Main", service: __,
-    dependencies: ['ApplicationRunner', 'Logger', 'resource(settings/settings.json)']
+    dependencies: ['ApplicationRunner', 'ChazLogger', 'resource(settings/settings.json)']
 };
 
 function __(ApplicationRunner, Logger, settings) {

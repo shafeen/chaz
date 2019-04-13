@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'ApplicationRunner', service: __, dependencies: ['Logger'],
+    name: 'ApplicationRunner', service: __, dependencies: ['ChazLogger'],
 };
 
 function __(Logger) {
