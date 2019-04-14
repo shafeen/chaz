@@ -8,7 +8,12 @@ chaz :smirk_cat:
 
 ---
 
-#### Directory structure and initializing the application
+#### Installation and Directory structure
+
+Create an empty project directory, init a `package.json` file and install the framework: 
+```
+npm i chaz-js
+```
 
 In your project root directory, create the entrypoint `app.js` (you can call it whatever you like), 
 and the folders `src/` and `resources/` (the folder names must be exactly "src" and "resources").
@@ -22,12 +27,44 @@ and the folders `src/` and `resources/` (the folder names must be exactly "src" 
    +--app.js
 ```
 
-To kick off the application, make sure you have `chaz` installed: `npm i chaz-js`, and then simply
-type this into your `app.js` file mentioned above:
+Paste the following into your `app.js` file, it only serves to kick off an application.
 
 ```javascript
+// app.js
+
 const chaz = require('chaz-js');
 chaz.initialize();
+```
+
+#### Getting started and initializing an application
+
+Kicking off the application by running your `app.js` (or equivalent file in your project root)
+will trigger the framework to search for an `ApplicationRunner` class to run. You may have 
+multiple `ApplicationRunner` classes, but most applications will probably stick with just 1.
+
+An `ApplicationRunner` is a simple subclass that extends the `ApplicationRunner` class 
+provided by the framework. Let's create a simple one in the `src/` folder:
+
+```javascript
+module.exports = {
+    name: "Main", service: __, dependencies: ['ApplicationRunner']
+};
+
+function __(ApplicationRunner) {
+    
+    // Application runners should implement 2 methods
+    // - order(): return an int to decide run order for multiple ApplicationRunners (if you have more than 1)
+    // - run(): contains whatever code you want to run when your application starts
+    class Main extends ApplicationRunner {
+        order() {return 0;}
+
+        run() {
+            console.log(`Starting sample ApplicationRunner class '${this.constructor.name}'`);
+        }
+    }
+    
+    return Main;
+}
 ```
 
 #### Dependency Injection Container
@@ -56,7 +93,7 @@ in the exported `dependencies` property list (you still need to have them instal
 using `npm install <module_name>`). Notice the lack of quotes around the
 `<module_name>` in the dependency list, this is on purpose. 
 
-Example:  
+**Example**:  
 ```javascript
 module.exports = {
     name: "MyFancyServiceClass", 
