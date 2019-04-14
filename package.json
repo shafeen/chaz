@@ -1,6 +1,7 @@
 {
   "name": "chaz-js",
-  "version": "0.2.3",
+  "version": "0.2.4",
+  "keywords": ["framework", "ioc", "di", "injection"],
   "private": false,
   "main": "chaz.js",
   "scripts": {
