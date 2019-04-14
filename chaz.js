@@ -9,14 +9,15 @@ function getRootProjectDir() {
         console.error(`"${rootDirPath}": Could not locate both src/ and resource/ directories. Exiting!`);
         process.exit(1);
     }
-    return path.posix.dirname(require.main.filename);
+    return rootDirPath;
 }
 function configureDIContainer(rootDirAbsolutePath) {
     const diContainer = require('./framework/config/diContainer.js');
     diContainer.initialize(rootDirAbsolutePath);
     // initialize ApplicationRunners after all injectables ready
-    diContainer.setupApplicationRunners();
+    return diContainer.setupApplicationRunners();
 }
-module.exports.initialize = function () {
-    configureDIContainer(getRootProjectDir());
+module.exports.initialize = function ({ rootProjectAbsolutePath }) {
+    rootProjectAbsolutePath = rootProjectAbsolutePath || getRootProjectDir();
+    return configureDIContainer(rootProjectAbsolutePath);
 };

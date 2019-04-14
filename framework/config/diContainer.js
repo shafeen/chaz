@@ -1,4 +1,6 @@
-const bottle = new require('bottlejs')('chaz'); // TODO: make the application name a constant
+const APPLICATION_NAME = 'chaz';
+const Bottle = require('bottlejs');
+let bottle = new Bottle(APPLICATION_NAME); // TODO: make the application name a constant
 const fs = require('fs');
 const path = require('path');
 
@@ -9,15 +11,22 @@ let componentList = [];
 let potentialAppRunnerNameList = [];
 let requireModulesRegistrationComplete = false;
 
+const resetDIContainer = function () {
+    Bottle.clear();
+    bottle = Bottle.pop(APPLICATION_NAME);
+};
+
 // TODO: add detection for dependencies requested that don't exist (use set/map matching)
 module.exports.initialize = function (rootProjectDirAbsPath) {
+    resetDIContainer();
+
     // update this list when you want to add more folders to scan
     const SRC_FOLDERS_TO_RECURSIVELY_SCAN = [ `${rootProjectDirAbsPath}/src` ];
     const FRAMEWORK_INJECTABLES_FOLDER = path.join(__dirname, 'FrameworkInjectables');
     const RESOURCES_FOLDER_TO_RECURSIVELY_SCAN = `${rootProjectDirAbsPath}/resources`;
 
     // initialize constants and system services
-    bottle.constant('APPLICATION_NAME', 'chaz');
+    bottle.constant('APPLICATION_NAME', APPLICATION_NAME);
     bottle.service('require', function() { return require; });
 
     // --------------------------------
@@ -200,7 +209,7 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
     setupInjectables();
     findSortApplicationRunners();
 
-    return bottle;
+    return bottle.container;
 };
 
 // This should be called separately in app.js after all injectables initialized
@@ -208,4 +217,6 @@ module.exports.setupApplicationRunners = function () {
     if (OrderedApplicationRunnersInBottle && Array.isArray(OrderedApplicationRunnersInBottle)) {
         OrderedApplicationRunnersInBottle.forEach(runner => runner.run());
     }
+
+    return bottle.container;
 };
