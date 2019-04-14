@@ -11,5 +11,7 @@ module.exports = {
 // do so, it would be an antipattern).
 const objectInInjectableClosure = {message: 'test object in the nested injectable\'s closure'};
 function __() {
-    return objectInInjectableClosure;
+    return {
+        objectInInjectableClosure: objectInInjectableClosure
+    };
 }

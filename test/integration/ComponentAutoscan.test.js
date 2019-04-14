@@ -14,17 +14,29 @@ describe('Autoscanning src/ directory integration test', function () {
     it('framework should be able to inject simple Components in the src/ root directory', function () {
         const { IntegrationTestOnlyInjectableClass } = container;
         assert.equal(
-            require(`${ROOT_PROJECT_DIRECTORY}/src/IntegrationTestOnlyInjectableClass.js`).service(),
-            IntegrationTestOnlyInjectableClass
+            require(`${ROOT_PROJECT_DIRECTORY}/src/IntegrationTestOnlyInjectableClass.js`)
+                .service().objectInInjectableClosure,
+            IntegrationTestOnlyInjectableClass.objectInInjectableClosure
         );
     });
 
     it('framework should be able to detect Components in the src/ directory recursively and inject them', function () {
         const { IntegrationTestOnlyInjectableClassNested } = container;
         assert.equal(
-            require(`${ROOT_PROJECT_DIRECTORY}/src/nested-level-one/IntegrationTestOnlyInjectableClassNested.js`).service(),
-            IntegrationTestOnlyInjectableClassNested
+            require(`${ROOT_PROJECT_DIRECTORY}/src/nested-level-one/IntegrationTestOnlyInjectableClassNested.js`)
+                .service().objectInInjectableClosure,
+            IntegrationTestOnlyInjectableClassNested.objectInInjectableClosure
         );
+    });
+
+    it('framework should be able to inject one Component into another if requested in dependencies', function () {
+        const { IntegrationTestOnlyInjectableClass } = container;
+        assert.equal(
+            IntegrationTestOnlyInjectableClass.objectInDependencyInjectableClosure,
+            require(`${ROOT_PROJECT_DIRECTORY}/src/nested-level-one/IntegrationTestOnlyInjectableClassNested.js`)
+                .service().objectInInjectableClosure
+        );
+
     });
 
 });

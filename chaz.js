@@ -14,7 +14,7 @@ function getRootProjectDir() {
 function configureDIContainer(rootDirAbsolutePath) {
     const diContainer = require('./framework/config/diContainer.js');
     diContainer.initialize(rootDirAbsolutePath);
-    // initialize ApplicationRunners after all resetBottleInstancesinjectables readresetBottleInstancesy
+    // initialize ApplicationRunners after all injectables ready
     return diContainer.setupApplicationRunners();
 }
 module.exports.initialize = function ({ rootProjectAbsolutePath } = {}) {
