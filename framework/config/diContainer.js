@@ -7,6 +7,7 @@ const path = require('path');
 let OrderedApplicationRunnersInBottle = [];
 let modulesToRequire = new Set();
 let resourcesToRequire = new Set();
+let envVariablesToInject = new Set();
 let componentList = [];
 let potentialAppRunnerNameList = [];
 let requireModulesRegistrationComplete = false;
@@ -40,6 +41,7 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
         updateComponentListInDirectory(absoluteDirectoryPath);
         registerRequireModules();
         registerResources();
+        registerEnvVariables();
         registerComponents();
     };
 
@@ -101,6 +103,7 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
         }
         updateDependencyModulesToRequire(moduleToRegister.dependencies);
         updateResourceFilesToRequire(moduleToRegister.dependencies, absolutePathForFile);
+        updateEnvVariablesToInject(moduleToRegister.dependencies);
         componentList.push(absolutePathForFile);
     };
 
@@ -108,9 +111,7 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
         const modulesToRequireRegex = /^require\(\s*(.*)\s*\)$/;
         const dependencyModulesToRequire = dependencyStrList
             .map(dependencyStr => dependencyStr.trim())
-            .filter(
-                dependencyStr => modulesToRequireRegex.test(dependencyStr)
-            )
+            .filter(dependencyStr => modulesToRequireRegex.test(dependencyStr))
             .map(dependencyStr => modulesToRequireRegex.exec(dependencyStr)[1]);
         dependencyModulesToRequire.forEach(moduleName => modulesToRequire.add(moduleName));
     };
@@ -136,6 +137,15 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
             }
             resourcesToRequire.add(resourceRelativePath);
         });
+    };
+
+    const updateEnvVariablesToInject = function (dependencyStrList) {
+        const envVariablesToInjectRegex = /^env\(\s*(.*)\s*\)$/;
+        const envVariablesToInjectList = dependencyStrList
+            .map(dependencyStr => dependencyStr.trim())
+            .filter(dependencyStr => envVariablesToInjectRegex.test(dependencyStr))
+            .map(dependencyStr => envVariablesToInjectRegex.exec(dependencyStr)[1]);
+        envVariablesToInjectList.forEach(envVariableName => envVariablesToInject.add(envVariableName));
     };
 
     const registerRequireModules = function () {
@@ -164,7 +174,17 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
                 ...[]
             );
         });
-        requireModulesRegistrationComplete = true;
+    };
+
+    const registerEnvVariables = function () {
+        const envVariablesToInjectList = Array.from(envVariablesToInject);
+        envVariablesToInjectList.forEach(envVariableToInject => {
+            bottle.constant(
+                `env(${envVariableToInject})`,
+                process.env[envVariableToInject]
+            );
+        });
+        envVariablesToInject.clear();
     };
 
     const registerComponents = function () {
@@ -175,10 +195,12 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
         }
         componentList.forEach(absolutePathForFile => {
             const moduleToRegister = require(absolutePathForFile);
+            const trimmedRegistryName = moduleToRegister.name.trim();
+            const trimmedDependencyNames = moduleToRegister.dependencies.map(name => name.trim());
             bottle.service(
-                moduleToRegister.name,
+                trimmedRegistryName,
                 moduleToRegister.service,
-                ...moduleToRegister.dependencies
+                ...trimmedDependencyNames
             );
         });
         componentList = [];

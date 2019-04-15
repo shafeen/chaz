@@ -119,3 +119,10 @@ function __(mongoose, MyService) {
     return MyFancyServiceClass;
 }
 ```
+
+#### Special Dependencies
+In addition to registered components, the following dependency formats have special meaning when
+specified in a component's dependency list:
+- `require(<module_name>)`: inject installed module (core or node_modules)
+- `resource(<resources_relative_name>)`: get and inject resource from resources/ directory
+- `env(<ENV_VARIABLE_NAME>)`: inject environment variable (from `process.env`)
