@@ -5,11 +5,13 @@ const fs = require('fs');
 const path = require('path');
 
 let OrderedApplicationRunnersInBottle = [];
+let TaskSchedulersInBottle = [];
 let modulesToRequire = new Set();
 let resourcesToRequire = new Set();
 let envVariablesToInject = new Set();
 let componentList = [];
 let potentialAppRunnerNameList = [];
+let potentialTaskSchedulerNameList = [];
 let requireModulesRegistrationComplete = false;
 
 const resetDIContainer = function () {
@@ -100,6 +102,10 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
         const APPLICATION_RUNNER_CLASS = 'ApplicationRunner';
         if (moduleToRegister.dependencies.indexOf(APPLICATION_RUNNER_CLASS) !== -1) {
             potentialAppRunnerNameList.push(moduleToRegister.name);
+        }
+        const TASK_SCHEDULER_CLASS = 'TaskScheduler';
+        if (moduleToRegister.dependencies.indexOf(TASK_SCHEDULER_CLASS) !== -1) {
+            potentialTaskSchedulerNameList.push(moduleToRegister.name);
         }
         updateDependencyModulesToRequire(moduleToRegister.dependencies);
         updateResourceFilesToRequire(moduleToRegister.dependencies, absolutePathForFile);
@@ -228,17 +234,37 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
             );
     };
 
+    const findAllTaskSchedulers = function () {
+        const { TaskScheduler } = bottle.container;
+        TaskSchedulersInBottle = potentialTaskSchedulerNameList
+            .map(injectableName => bottle.container[injectableName])
+            .filter(injectable =>
+                typeof injectable === 'function' &&
+                TaskScheduler.isPrototypeOf(injectable)
+            );
+    };
+
     setupInjectables();
     findSortApplicationRunners();
+    findAllTaskSchedulers();
 
     return bottle.container;
 };
 
-// This should be called separately in app.js after all injectables initialized
+// Call separately in app.js after all injectablesinitialized
+// This is so they it be tested running separately
 module.exports.setupApplicationRunners = function () {
     if (OrderedApplicationRunnersInBottle && Array.isArray(OrderedApplicationRunnersInBottle)) {
         OrderedApplicationRunnersInBottle.forEach(runner => runner.run());
     }
+    return bottle.container;
+};
 
+// Call separately in app.js after all injectables initialized
+// This is so they it be tested running separately
+module.exports.setupTaskSchedulers = function () {
+    if (TaskSchedulersInBottle && Array.isArray(TaskSchedulersInBottle)) {
+        TaskSchedulersInBottle.forEach(TaskSchedulerSubClass => new TaskSchedulerSubClass());
+    }
     return bottle.container;
 };

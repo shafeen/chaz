@@ -39,8 +39,9 @@ chaz.initialize();
 #### Getting started and initializing an application
 
 Kicking off the application by running your `app.js` (or equivalent file in your project root)
-will trigger the framework to search for an `ApplicationRunner` class to run. You may have 
-multiple `ApplicationRunner` classes, but most applications will probably stick with just 1.
+will trigger the framework to search for an `ApplicationRunner` class (or `TaskScheduler` class, 
+but more on those later) to run. You may have multiple `ApplicationRunner` classes, but most 
+applications will probably stick with just 1.
 
 An `ApplicationRunner` is a simple subclass that extends the `ApplicationRunner` class 
 provided by the framework. Let's create a simple one in the `src/` folder:
@@ -126,3 +127,47 @@ specified in a component's dependency list:
 - `require(<module_name>)`: inject installed module (core or node_modules)
 - `resource(<resources_relative_name>)`: get and inject resource from resources/ directory
 - `env(<ENV_VARIABLE_NAME>)`: inject environment variable (from `process.env`)
+
+#### Special Framework "Runner" classes
+
+##### `ApplicationRunner`
+`ApplicationRunner` subclasses must implement a run function that will be kicked off in
+order by the framework after initialization. This is typically the main entry point to 
+an application. You can think of them like a `public static void main()` in Java; however
+you can have more than 1 `ApplicationRunner` in an application if the need arises.
+
+See example shown above in the **Getting started 
+and initializing an application** section.
+
+##### `TaskScheduler`
+`TaskScheduler` subclasses must implement a run function for the framework to periodically 
+run and a config function that lets the framework know the what schedule the framework should 
+follow.
+
+Example `TaskScheduler` class:
+```javascript
+module.exports = {
+    name: "MessageScheduler", service: __,
+    dependencies: ['TaskScheduler']
+};
+
+function __(TaskScheduler) {
+
+    class MessageScheduler extends TaskScheduler {
+        config() {
+            return { 
+                delay: 1000, 
+                runOnceFirst: false, 
+                runOnlyOnce: false 
+            };
+        }
+        
+        run() {
+            console.log(`Running sample TaskScheduler class '${this.constructor.name}'`);
+        }
+
+    }
+    return MessageScheduler;
+}
+```
+

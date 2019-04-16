@@ -14,8 +14,9 @@ function getRootProjectDir() {
 function configureDIContainer(rootDirAbsolutePath) {
     const diContainer = require('./framework/config/diContainer.js');
     diContainer.initialize(rootDirAbsolutePath);
-    // initialize ApplicationRunners after all injectables ready
-    return diContainer.setupApplicationRunners();
+    // initialize ApplicationRunners / TaskSchedulers after all injectables ready
+    diContainer.setupApplicationRunners();
+    return diContainer.setupTaskSchedulers();
 }
 module.exports.initialize = function ({ rootProjectAbsolutePath } = {}) {
     rootProjectAbsolutePath = rootProjectAbsolutePath || getRootProjectDir();
