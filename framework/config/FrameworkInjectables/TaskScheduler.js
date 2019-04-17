@@ -37,14 +37,20 @@ function __() {
 
             validateConfig(config);
             if (config.runOnlyOnce) {
-                setTimeout(self.run, config.delay);
+                setTimeout(function() {
+                    self.run.apply(self);
+                }, config.delay);
             } else if (config.runOnceFirst) {
-                self.run();
+                self.run.apply(self);
                 setTimeout(function () {
-                    setInterval(self.run, config.delay);
+                    setInterval(function() {
+                        self.run.apply(self);
+                    }, config.delay);
                 }, config.delay);
             } else {
-                setInterval(self.run, config.delay);
+                setInterval(function() {
+                    self.run.apply(self);
+                }, config.delay);
             }
         }
 
