@@ -3,12 +3,22 @@ module.exports = {
 };
 
 function __(debug) {
+    const LogDecorators = {
+        addISODatePrefix(loggerObject) {
+            return function decoratedLoggerObject() {
+                const formattedLogMsg = arguments[0];
+                arguments[0] = `[${new Date().toISOString()}] ${formattedLogMsg}`;
+                return loggerObject(...arguments);
+            };
+        }
+    };
+
     return {
-        error: debug('error'),
-        warn: debug('warn'),
-        info: debug('info'),
-        verbose: debug('verbose'),
-        debug: debug('debug'),
-        silly: debug('silly'),
+        error: LogDecorators.addISODatePrefix(debug('error')),
+        warn: LogDecorators.addISODatePrefix(debug('warn')),
+        info: LogDecorators.addISODatePrefix(debug('info')),
+        verbose: LogDecorators.addISODatePrefix(debug('verbose')),
+        debug: LogDecorators.addISODatePrefix(debug('debug')),
+        silly: LogDecorators.addISODatePrefix(debug('silly')),
     }
 }
