@@ -6,7 +6,7 @@ function getRootProjectDir() {
     const srcDirPath = fs.existsSync(`${rootDirPath}/src`) ? `${rootDirPath}/src` : null;
     const resourcesDirPath = fs.existsSync(`${rootDirPath}/resources`) ? `${rootDirPath}/resources` : null;
     if (srcDirPath === null || resourcesDirPath === null) {
-        console.error(`"${rootDirPath}": Could not locate both src/ and resource/ directories. Exiting!`);
+        console.error(`"${rootDirPath}": Could not locate both src/ and resources/ directories. Exiting!`);
         process.exit(1);
     }
     return rootDirPath;
