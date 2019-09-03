@@ -1,8 +1,12 @@
+function onWin32Platform() {
+    return process.platform === 'win32';
+}
 function getRootProjectDir() {
     // detect root directory and expected folder structure
     const path = require('path');
     const fs = require('fs');
-    const rootDirPath = path.posix.dirname(require.main.filename);
+    const rootDirPath = onWin32Platform()?
+        path.win32.dirname(require.main.filename) : path.posix.dirname(require.main.filename);
     const srcDirPath = fs.existsSync(`${rootDirPath}/src`) ? `${rootDirPath}/src` : null;
     const resourcesDirPath = fs.existsSync(`${rootDirPath}/resources`) ? `${rootDirPath}/resources` : null;
     if (srcDirPath === null || resourcesDirPath === null) {
