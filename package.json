@@ -1,6 +1,6 @@
 {
   "name": "chaz-js",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "keywords": ["framework", "ioc", "di", "injection"],
   "private": false,
   "license": "ISC",

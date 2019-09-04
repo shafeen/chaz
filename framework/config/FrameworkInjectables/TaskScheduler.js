@@ -42,10 +42,8 @@ function __() {
                 }, config.delay);
             } else if (config.runOnceFirst) {
                 self.run.apply(self);
-                setTimeout(function () {
-                    setInterval(function() {
-                        self.run.apply(self);
-                    }, config.delay);
+                setInterval(function() {
+                    self.run.apply(self);
                 }, config.delay);
             } else {
                 setInterval(function() {
