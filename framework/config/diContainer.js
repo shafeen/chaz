@@ -66,9 +66,13 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
     const isBottleTarget = function (absolutePathForFile) {
         const potentialTargetModule = require(absolutePathForFile);
         const properties = new Set(Object.keys(potentialTargetModule));
-        const NAME='name', SERVICE='service', DEPENDENCIES='dependencies';
-        const required = [ NAME, SERVICE, DEPENDENCIES ];
-        const isComponentForDIContainer = required.every(
+        const NAME='name', SERVICE='service', CONFIG='config', DEPENDENCIES='dependencies';
+        const componentRequirements = [ NAME, SERVICE, DEPENDENCIES ];
+        const isComponentForDIContainer = componentRequirements.every(
+            requiredProperty => properties.has(requiredProperty)
+        );
+        const configComponentRequirements = [ NAME, CONFIG ];
+        const isConfigComponentForDIContainer = configComponentRequirements.every(
             requiredProperty => properties.has(requiredProperty)
         );
         if (isComponentForDIContainer) {
@@ -92,6 +96,20 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
                 );
             }
             return true;
+        } else if (isConfigComponentForDIContainer) {
+            // Run Validation checks
+            // TODO: do extra config component validations later ---
+            //  Need to check for duplicate registry names in both config and regular components
+            if (typeof potentialTargetModule[NAME] !== 'string') {
+                throw new Error(`"${absolutePathForFile}": Config "${NAME}" attribute must be a string!`);
+            }
+            if (potentialTargetModule[NAME].length === 0) {
+                throw new Error(`"${absolutePathForFile}": Config "${NAME}" attribute cannot be an empty string!`);
+            }
+            if (typeof potentialTargetModule[CONFIG] !== 'object') {
+                throw new Error(`"${absolutePathForFile}": Config "${CONFIG}" attribute must be an object!`);
+            }
+            return true;
         } else {
             // TODO: emit a warning here later
         }
@@ -99,17 +117,19 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
 
     const updateComponentList = function (absolutePathForFile) {
         const moduleToRegister = require(absolutePathForFile);
-        const APPLICATION_RUNNER_CLASS = 'ApplicationRunner';
-        if (moduleToRegister.dependencies.indexOf(APPLICATION_RUNNER_CLASS) !== -1) {
-            potentialAppRunnerNameList.push(moduleToRegister.name);
+        if (moduleToRegister.dependencies) {
+            const APPLICATION_RUNNER_CLASS = 'ApplicationRunner';
+            if (moduleToRegister.dependencies.indexOf(APPLICATION_RUNNER_CLASS) !== -1) {
+                potentialAppRunnerNameList.push(moduleToRegister.name);
+            }
+            const TASK_SCHEDULER_CLASS = 'TaskScheduler';
+            if (moduleToRegister.dependencies.indexOf(TASK_SCHEDULER_CLASS) !== -1) {
+                potentialTaskSchedulerNameList.push(moduleToRegister.name);
+            }
+            updateDependencyModulesToRequire(moduleToRegister.dependencies);
+            updateResourceFilesToRequire(moduleToRegister.dependencies, absolutePathForFile);
+            updateEnvVariablesToInject(moduleToRegister.dependencies);
         }
-        const TASK_SCHEDULER_CLASS = 'TaskScheduler';
-        if (moduleToRegister.dependencies.indexOf(TASK_SCHEDULER_CLASS) !== -1) {
-            potentialTaskSchedulerNameList.push(moduleToRegister.name);
-        }
-        updateDependencyModulesToRequire(moduleToRegister.dependencies);
-        updateResourceFilesToRequire(moduleToRegister.dependencies, absolutePathForFile);
-        updateEnvVariablesToInject(moduleToRegister.dependencies);
         componentList.push(absolutePathForFile);
     };
 
@@ -194,12 +214,28 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
     };
 
     const registerComponents = function () {
+        // TODO: after component registering, we can run checks on dependencies to see if
+        //  all component are requesting dependencies that ACTUALLY exist, rather than finding out at runtime
+
         if (!requireModulesRegistrationComplete) {
             throw new Error(
                 "REQUIRED: 'require' module registration must complete before component registration!"
             );
         }
-        componentList.forEach(absolutePathForFile => {
+
+        // distinguish between the "configuration" components and the regular "full" components
+        const regularInjectableComponents = componentList.filter(absolutePathForFile => {
+            const moduleToRegister = require(absolutePathForFile);
+            const isConfigComponent = !!moduleToRegister.config;
+            const isRegularInjectableComponent = !!moduleToRegister.service;
+            return !isConfigComponent && isRegularInjectableComponent;
+        });
+        const configComponents = componentList.filter(absolutePathForFile => {
+            const moduleToRegister = require(absolutePathForFile);
+            const isConfigComponent = !!moduleToRegister.config;
+            return isConfigComponent;
+        });
+        regularInjectableComponents.forEach(absolutePathForFile => {
             const moduleToRegister = require(absolutePathForFile);
             const trimmedRegistryName = moduleToRegister.name.trim();
             const trimmedDependencyNames = moduleToRegister.dependencies.map(name => name.trim());
@@ -208,6 +244,31 @@ module.exports.initialize = function (rootProjectDirAbsPath) {
                 moduleToRegister.service,
                 ...trimmedDependencyNames
             );
+        });
+        configComponents.forEach(absolutePathForFile => {
+            const DEPENDENCIES = 'dependencies';
+            const SERVICE = 'service';
+            const configModuleToRegister = require(absolutePathForFile);
+            // get the list of "bean" style injectables returned -- and then register them like regular components
+            const injectablesDeclaredInConfig = configModuleToRegister.config;
+            Object.getOwnPropertyNames(injectablesDeclaredInConfig).forEach(injectableName => {
+                const potentialTargetModule = injectablesDeclaredInConfig[injectableName];
+                if (Array.isArray(potentialTargetModule[DEPENDENCIES]) === false) {
+                    throw new Error(`"${absolutePathForFile}": Injectable ${injectableName}'s "${DEPENDENCIES}" attribute must be an array!`);
+                }
+                if (potentialTargetModule[DEPENDENCIES].length !== potentialTargetModule[SERVICE].length) {
+                    throw new Error(
+                        `"${absolutePathForFile}": Injectable ${injectableName}'s "${DEPENDENCIES}" list doesn't match "${SERVICE}" function parameter count! ` +
+                        `Function "${SERVICE}" expecting ${potentialTargetModule[SERVICE].length} parameters, getting ${potentialTargetModule[DEPENDENCIES].length} from "${DEPENDENCIES}".`
+                    );
+                }
+                const trimmedDependencyNames = potentialTargetModule[DEPENDENCIES].map(name => name.trim());
+                bottle.service(
+                    injectableName.trim(),
+                    potentialTargetModule.service,
+                    ...trimmedDependencyNames
+                );
+            });
         });
         componentList = [];
     };
